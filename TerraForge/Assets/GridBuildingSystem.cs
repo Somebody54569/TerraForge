@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,51 +7,53 @@ using Unity.Netcode;
 
 public class GridBuildingSystem : NetworkBehaviour
 {
-    public static GridBuildingSystem current;
+//    public static GridBuildingSystem current;
 
     public GridLayout gridLayout;
-
     public Tilemap mainTileMap;
     public Tilemap TempTileMap;
 
     private static Dictionary<TileType, TileBase> tileBases = new Dictionary<TileType, TileBase>();
 
-    private Building temp;
+    public Building temp;
 
     private Vector3 prevPos;
-
     private BoundsInt prevArea;
 
     // Start is called before the first frame update
-    private void Awake()
-    {
-        current = this;
-    }
-
+    
     void Start()
     {
+        gridLayout = GameObject.Find("Grid").GetComponent<GridLayout>();
+        mainTileMap = GameObject.Find("MainTilemap").GetComponent<Tilemap>();
+        TempTileMap = GameObject.Find("TempTilemap").GetComponent<Tilemap>();
         string tilePath = @"TileMap\";
-        tileBases.Add(TileType.Empty, null);
-        tileBases.Add(TileType.White, Resources.Load<TileBase>(tilePath + "White"));
-        tileBases.Add(TileType.Green, Resources.Load<TileBase>(tilePath + "Green"));
-        tileBases.Add(TileType.Red, Resources.Load<TileBase>(tilePath + "Red"));
+
+        // Check if the key already exists before adding
+        if (!tileBases.ContainsKey(TileType.Empty))
+        {
+            tileBases.Add(TileType.Empty, null);
+        }
+
+        if (!tileBases.ContainsKey(TileType.White))
+        {
+            tileBases.Add(TileType.White, Resources.Load<TileBase>(tilePath + "White"));
+        }
+
+        if (!tileBases.ContainsKey(TileType.Green))
+        {
+            tileBases.Add(TileType.Green, Resources.Load<TileBase>(tilePath + "Green"));
+        }
+
+        if (!tileBases.ContainsKey(TileType.Red))
+        {
+            tileBases.Add(TileType.Red, Resources.Load<TileBase>(tilePath + "Red"));
+        }
     }
 
-    public override void OnNetworkSpawn()
-    {
-        if (!IsOwner) { return; }
-        
-    }
-    
-    public override void OnNetworkDespawn()
-    {
-        if (!IsOwner) { return; }
-        
-    }
     // Update is called once per frame
     void Update()
     {
-     //   if (!IsServer) { return; }
         if (!temp)
         {
             return;
@@ -80,7 +81,7 @@ public class GridBuildingSystem : NetworkBehaviour
         {
             if (temp.CanBePlaced())
             {
-                temp.Place();
+                PlaceBuilding();
             }
         }
         else if (Input.GetKeyDown(KeyCode.Escape))
@@ -89,9 +90,26 @@ public class GridBuildingSystem : NetworkBehaviour
             Destroy(temp.gameObject);
         }
     }
-
+    public void InitializeWithBuilding(GameObject building)
+    {
+        if (!IsLocalPlayer)
+            return;
     
-    private void FollowBuilding()
+        temp = Instantiate(building, Vector3.zero, Quaternion.identity).GetComponent<Building>();
+        temp._GridBuildingSystem = this;
+        FollowBuilding();
+    }
+    
+    public void PlaceBuilding()
+    {
+        Vector3Int positionInt = gridLayout.LocalToCell(temp.transform.position);
+        BoundsInt areaTemp = temp.area;
+        areaTemp.position = positionInt;
+        temp.Placed = true;
+        TakeAreaServerRpc(areaTemp);
+    }
+
+    public void FollowBuilding()
     {
         ClearArea();
         temp.area.position = gridLayout.WorldToCell(temp.gameObject.transform.position);
@@ -115,8 +133,8 @@ public class GridBuildingSystem : NetworkBehaviour
         }
         TempTileMap.SetTilesBlock(buildingArea, tileArray);
         prevArea = buildingArea;
-      
     }
+
     public bool CanTakeArea(BoundsInt area)
     {
         TileBase[] baseArray = GetTilesBlock(area, mainTileMap);
@@ -130,34 +148,25 @@ public class GridBuildingSystem : NetworkBehaviour
 
         return true;
     }
-
-    
     [ServerRpc]
     public void TakeAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
-        BoundsInt areaValue = area.Value;
-        SetTilesBlock(areaValue, TileType.Empty, TempTileMap);
-        SetTilesBlock(areaValue, TileType.Green, mainTileMap);
+        TakeArea(area);
         TakeAreaClientRpc(area);
     }
     [ClientRpc]
-    public void TakeAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
+    private void TakeAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
         if (IsOwner) { return; }
-        BoundsInt areaValue = area.Value;
-        SetTilesBlock(areaValue, TileType.Empty, TempTileMap);
-        SetTilesBlock(areaValue, TileType.Green, mainTileMap);
+        TakeArea(area);
     }
-   public void TakeArea(BoundsInt area)
-   {
-       SetTilesBlock(area, TileType.Empty, TempTileMap);
-       SetTilesBlock(area, TileType.Green, mainTileMap);
-   }
-    public void InitializeWithBuilding(GameObject building)
+    
+    public void TakeArea(BoundsInt area)
     {
-        temp = Instantiate(building, Vector3.zero, Quaternion.identity).GetComponent<Building>();
-        FollowBuilding();
+        SetTilesBlock(area, TileType.Empty, TempTileMap);
+        SetTilesBlock(area, TileType.Green, mainTileMap);
     }
+
     public void ClearArea()
     {
         TileBase[] toClear = new TileBase[prevArea.size.x * prevArea.size.y * prevArea.size.z];
@@ -171,8 +180,8 @@ public class GridBuildingSystem : NetworkBehaviour
         TileBase[] tileArray = new TileBase[size];
         FillTiles(tileArray, type);
         tilemap.SetTilesBlock(area, tileArray);
-        
     }
+
     private static void FillTiles(TileBase[] arr, TileType type)
     {
         for (int i = 0; i < arr.Length; i++)
@@ -180,6 +189,7 @@ public class GridBuildingSystem : NetworkBehaviour
             arr[i] = tileBases[type];
         }
     }
+
     private static TileBase[] GetTilesBlock(BoundsInt area, Tilemap tilemap)
     {
         TileBase[] array = new TileBase[area.size.x * area.size.y * area.size.z];
@@ -194,29 +204,12 @@ public class GridBuildingSystem : NetworkBehaviour
 
         return array;
     }
-
 }
+
 public enum TileType
 {
     Empty,
     White,
     Green,
     Red,
-}
-public static class BoundsIntSerializationExtensions
-{
-    public static void WriteValueSafe(this FastBufferWriter writer, in UnityEngine.BoundsInt value)
-    {
-        writer.WriteValueSafe(value.position);
-        writer.WriteValueSafe(value.size);
-    }
-
-    public static void ReadValueSafe(this FastBufferReader reader, out UnityEngine.BoundsInt value)
-    {
-        UnityEngine.Vector3Int position;
-        UnityEngine.Vector3Int size;
-        reader.ReadValueSafe(out position);
-        reader.ReadValueSafe(out size);
-        value = new UnityEngine.BoundsInt(position, size);
-    }
 }

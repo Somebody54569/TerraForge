@@ -2,32 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
-public class Building : NetworkBehaviour
-{
-    public bool Placed { get; private set; }
 
+public class Building : NetworkBehaviour 
+{
+    public bool Placed;
     public BoundsInt area;
+    public GridBuildingSystem _GridBuildingSystem;
 
     public bool CanBePlaced()
     {
-        Vector3Int positionInt = GridBuildingSystem.current.gridLayout.LocalToCell(transform.position);
+        Vector3Int positionInt = _GridBuildingSystem.gridLayout.LocalToCell(transform.position);
         BoundsInt areaTemp = area;
         areaTemp.position = positionInt;
-        if (GridBuildingSystem.current.CanTakeArea(areaTemp))
+        if (_GridBuildingSystem.CanTakeArea(areaTemp))
         {
             return true;
         }
 
         return false;
     }
-
-    public void Place()
-    {
-        Vector3Int positionInt = GridBuildingSystem.current.gridLayout.LocalToCell(transform.position);
-        BoundsInt areaTemp = area;
-        areaTemp.position = positionInt;
-        Placed = true;
-        GridBuildingSystem.current.TakeAreaServerRpc(areaTemp);
-    }
+    
 }
     
