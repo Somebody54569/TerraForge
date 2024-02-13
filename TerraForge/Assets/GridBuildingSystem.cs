@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using Unity.Netcode;
 
-public class GridBuildingSystem : MonoBehaviour
+public class GridBuildingSystem : NetworkBehaviour
 {
     public static GridBuildingSystem current;
 
@@ -13,7 +14,7 @@ public class GridBuildingSystem : MonoBehaviour
 
     public Tilemap mainTileMap;
     public Tilemap TempTileMap;
-    
+
     private static Dictionary<TileType, TileBase> tileBases = new Dictionary<TileType, TileBase>();
 
     private Building temp;
@@ -21,6 +22,7 @@ public class GridBuildingSystem : MonoBehaviour
     private Vector3 prevPos;
 
     private BoundsInt prevArea;
+
     // Start is called before the first frame update
     private void Awake()
     {
@@ -34,36 +36,47 @@ public class GridBuildingSystem : MonoBehaviour
         tileBases.Add(TileType.White, Resources.Load<TileBase>(tilePath + "White"));
         tileBases.Add(TileType.Green, Resources.Load<TileBase>(tilePath + "Green"));
         tileBases.Add(TileType.Red, Resources.Load<TileBase>(tilePath + "Red"));
-   
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        if (!IsOwner) { return; }
+        
+    }
+    
+    public override void OnNetworkDespawn()
+    {
+        if (!IsOwner) { return; }
         
     }
     // Update is called once per frame
     void Update()
     {
+     //   if (!IsServer) { return; }
         if (!temp)
         {
             return;
         }
 
-       
-            if (EventSystem.current.IsPointerOverGameObject(0))
-            {
-                return;
-            }
+        if (EventSystem.current.IsPointerOverGameObject(0))
+        {
+            return;
+        }
 
-            if (!temp.Placed)
+        if (!temp.Placed)
+        {
+            Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3Int cellPos = gridLayout.LocalToCell(touchPos);
+            if (prevPos != cellPos)
             {
-                Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                Vector3Int cellPos = gridLayout.LocalToCell(touchPos);
-                if (prevPos != cellPos)
-                {
-                    temp.transform.localPosition = gridLayout.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f, 0f));
-                    prevPos = cellPos;
-                    FollowBuilding();
-                }
+                temp.transform.localPosition =
+                    gridLayout.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f, 0f));
+                prevPos = cellPos;
+                FollowBuilding();
             }
-        
-        if(Input.GetMouseButtonDown(0))
+        }
+
+        if (Input.GetMouseButtonDown(0))
         {
             if (temp.CanBePlaced())
             {
@@ -77,10 +90,10 @@ public class GridBuildingSystem : MonoBehaviour
         }
     }
 
+    
     private void FollowBuilding()
     {
         ClearArea();
-
         temp.area.position = gridLayout.WorldToCell(temp.gameObject.transform.position);
         BoundsInt buildingArea = temp.area;
 
@@ -102,8 +115,8 @@ public class GridBuildingSystem : MonoBehaviour
         }
         TempTileMap.SetTilesBlock(buildingArea, tileArray);
         prevArea = buildingArea;
+      
     }
-
     public bool CanTakeArea(BoundsInt area)
     {
         TileBase[] baseArray = GetTilesBlock(area, mainTileMap);
@@ -118,13 +131,28 @@ public class GridBuildingSystem : MonoBehaviour
         return true;
     }
 
-    public void TakeArea(BoundsInt area)
+    
+    [ServerRpc]
+    public void TakeAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
-        SetTilesBlock(area, TileType.Empty, TempTileMap);
-        SetTilesBlock(area, TileType.Green, mainTileMap);
+        BoundsInt areaValue = area.Value;
+        SetTilesBlock(areaValue, TileType.Empty, TempTileMap);
+        SetTilesBlock(areaValue, TileType.Green, mainTileMap);
+        TakeAreaClientRpc(area);
     }
-    
-    
+    [ClientRpc]
+    public void TakeAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
+    {
+        if (IsOwner) { return; }
+        BoundsInt areaValue = area.Value;
+        SetTilesBlock(areaValue, TileType.Empty, TempTileMap);
+        SetTilesBlock(areaValue, TileType.Green, mainTileMap);
+    }
+   public void TakeArea(BoundsInt area)
+   {
+       SetTilesBlock(area, TileType.Empty, TempTileMap);
+       SetTilesBlock(area, TileType.Green, mainTileMap);
+   }
     public void InitializeWithBuilding(GameObject building)
     {
         temp = Instantiate(building, Vector3.zero, Quaternion.identity).GetComponent<Building>();
@@ -174,4 +202,21 @@ public enum TileType
     White,
     Green,
     Red,
+}
+public static class BoundsIntSerializationExtensions
+{
+    public static void WriteValueSafe(this FastBufferWriter writer, in UnityEngine.BoundsInt value)
+    {
+        writer.WriteValueSafe(value.position);
+        writer.WriteValueSafe(value.size);
+    }
+
+    public static void ReadValueSafe(this FastBufferReader reader, out UnityEngine.BoundsInt value)
+    {
+        UnityEngine.Vector3Int position;
+        UnityEngine.Vector3Int size;
+        reader.ReadValueSafe(out position);
+        reader.ReadValueSafe(out size);
+        value = new UnityEngine.BoundsInt(position, size);
+    }
 }

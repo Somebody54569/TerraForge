@@ -1,23 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class Building : MonoBehaviour
+using Unity.Netcode;
+public class Building : NetworkBehaviour
 {
     public bool Placed { get; private set; }
 
     public BoundsInt area;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public bool CanBePlaced()
     {
@@ -38,6 +27,7 @@ public class Building : MonoBehaviour
         BoundsInt areaTemp = area;
         areaTemp.position = positionInt;
         Placed = true;
-        GridBuildingSystem.current.TakeArea(areaTemp);
+        GridBuildingSystem.current.TakeAreaServerRpc(areaTemp);
     }
 }
+    
