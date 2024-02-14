@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Unity.Netcode;
-
 public class GridBuildingSystem : NetworkBehaviour
 {
 //    public static GridBuildingSystem current;
@@ -16,7 +15,7 @@ public class GridBuildingSystem : NetworkBehaviour
     private static Dictionary<TileType, TileBase> tileBases = new Dictionary<TileType, TileBase>();
 
     public Building temp;
-    private Vector3 prevPos;
+    public Vector3 prevPos;
     private BoundsInt prevArea;
 
     // Start is called before the first frame update
@@ -27,8 +26,11 @@ public class GridBuildingSystem : NetworkBehaviour
         mainTileMap = GameObject.Find("MainTilemap").GetComponent<Tilemap>();
         TempTileMap = GameObject.Find("TempTilemap").GetComponent<Tilemap>();
         string tilePath = @"TileMap\";
-
-        // Check if the key already exists before adding
+        tileBases.Add(TileType.Empty, null);
+        tileBases.Add(TileType.White, Resources.Load<TileBase>(tilePath + "White"));
+        tileBases.Add(TileType.Green, Resources.Load<TileBase>(tilePath + "Green"));
+        tileBases.Add(TileType.Red, Resources.Load<TileBase>(tilePath + "Red"));
+        /*// Check if the key already exists before adding
         if (!tileBases.ContainsKey(TileType.Empty))
         {
             tileBases.Add(TileType.Empty, null);
@@ -47,47 +49,14 @@ public class GridBuildingSystem : NetworkBehaviour
         if (!tileBases.ContainsKey(TileType.Red))
         {
             tileBases.Add(TileType.Red, Resources.Load<TileBase>(tilePath + "Red"));
-        }
+        }*/
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!temp)
-        {
-            return;
-        }
+        
 
-        if (EventSystem.current.IsPointerOverGameObject(0))
-        {
-            return;
-        }
-
-        if (!temp.Placed)
-        {
-            Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int cellPos = gridLayout.LocalToCell(touchPos);
-            if (prevPos != cellPos)
-            {
-                temp.transform.localPosition =
-                    gridLayout.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f, 0f));
-                prevPos = cellPos;
-                FollowBuilding();
-            }
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (temp.CanBePlaced())
-            {
-                PlaceBuilding();
-            }
-        }
-        else if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ClearArea();
-            Destroy(temp.gameObject);
-        }
     }
     
    /* [ServerRpc]
@@ -115,7 +84,6 @@ public class GridBuildingSystem : NetworkBehaviour
             temp = instantiatedObject.GetComponent<Building>();
             if (temp != null)
             {
-                temp.SetOwner(OwnerClientId);
                 temp._GridBuildingSystem = this;
                 FollowBuilding();
             }
@@ -130,14 +98,7 @@ public class GridBuildingSystem : NetworkBehaviour
     }
     */
     
-    public void PlaceBuilding()
-    {
-        Vector3Int positionInt = gridLayout.LocalToCell(temp.transform.position);
-        BoundsInt areaTemp = temp.area;
-        areaTemp.position = positionInt;
-        temp.Placed = true;
-        TakeAreaServerRpc(areaTemp);
-    }
+ 
 
     public void FollowBuilding()
     {
@@ -178,18 +139,8 @@ public class GridBuildingSystem : NetworkBehaviour
 
         return true;
     }
-    [ServerRpc]
-    public void TakeAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
-    {
-        TakeArea(area);
-        TakeAreaClientRpc(area);
-    }
-    [ClientRpc]
-    private void TakeAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
-    {
-        if (IsOwner) { return; }
-        TakeArea(area);
-    }
+    
+ 
     
     public void TakeArea(BoundsInt area)
     {

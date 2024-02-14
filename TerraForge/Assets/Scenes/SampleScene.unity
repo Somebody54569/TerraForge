@@ -909,7 +909,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 146505706}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1444563538}
+        m_TargetAssemblyTypeName: GridBuildingSystem, Assembly-CSharp
+        m_MethodName: InitializeWithBuilding
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: building
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &146505706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1900,7 +1912,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1444563537}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30387a1125832d84cad49838801a83bb, type: 3}
   m_Name: 
@@ -1909,6 +1921,7 @@ MonoBehaviour:
   mainTileMap: {fileID: 26001727}
   TempTileMap: {fileID: 207648032}
   temp: {fileID: 0}
+  prevPos: {x: 0, y: 0, z: 0}
 --- !u!156049354 &1444563539
 Grid:
   m_ObjectHideFlags: 0
