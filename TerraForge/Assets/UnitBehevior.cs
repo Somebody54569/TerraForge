@@ -8,18 +8,25 @@ public class UnitBehevior : NetworkBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float movementSpeed = 4f;
     private Vector2 targetPosition;
+    private ulong ownerClientId;
+    public void SetOwner(ulong ownerClientId)
+    {
+        this.ownerClientId = ownerClientId;
+    }
+    
     private void Update()
     {
         if (!IsOwner) { return; }
-        if (Input.GetMouseButtonDown(1))
-        {
-            targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        }
+        
+            if (Input.GetMouseButtonDown(1))
+            {
+                targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            }
     }
 
     private void FixedUpdate()
     {
-        if (!IsOwner) { return; }
+       if (!IsOwner) { return; }
       
         
         if (Vector2.Distance(rb.position, targetPosition) > 0.1f)

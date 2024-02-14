@@ -19,6 +19,11 @@ public class PlayerManager : NetworkBehaviour
     private void Update()
     {
         if (!IsOwner) { return; }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            InitializeWithUnitServerRpc("Unit_Melee");
+        }
         if (!_gridBuildingSystem.temp)
         {
             return;
@@ -64,7 +69,32 @@ public class PlayerManager : NetworkBehaviour
         //TakeAreaServerRpc(areaTemp);
     }
 
-    
+    [ServerRpc]
+    public void InitializeWithUnitServerRpc(string prefabName)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+
+        if (buildingPrefab != null)
+        {
+            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
+            instantiatedObject.GetComponent<NetworkObject>().Spawn();
+            // Check if the instantiated object has a NetworkObject component
+            
+        }
+        InitializeWithUnitClientRpc(prefabName);
+    }
+    [ClientRpc]
+    public void InitializeWithUnitClientRpc(string prefabName)
+    {
+       // if (IsOwner) { return; }
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+
+        if (buildingPrefab != null)
+        {
+            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
+            instantiatedObject.GetComponent<NetworkObject>().Spawn();
+        }
+    }
     [ServerRpc]
     private void TakeAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
@@ -74,7 +104,7 @@ public class PlayerManager : NetworkBehaviour
     [ClientRpc]
     private void TakeAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
-        if (IsOwner) { return; }
+     //   if (IsOwner) { return; }
         _gridBuildingSystem.TakeArea(area);
     }
 }

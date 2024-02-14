@@ -89,6 +89,17 @@ public class GridBuildingSystem : NetworkBehaviour
             }
         }
     }
+    
+    public void InitializeWithUnit(string prefabName)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+
+        if (buildingPrefab != null)
+        {
+            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
+            
+        }
+    }
     /*
     public void InitializeWithBuilding(GameObject building)
     {
