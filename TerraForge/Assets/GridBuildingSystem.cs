@@ -16,7 +16,6 @@ public class GridBuildingSystem : NetworkBehaviour
     private static Dictionary<TileType, TileBase> tileBases = new Dictionary<TileType, TileBase>();
 
     public Building temp;
-
     private Vector3 prevPos;
     private BoundsInt prevArea;
 
@@ -90,15 +89,46 @@ public class GridBuildingSystem : NetworkBehaviour
             Destroy(temp.gameObject);
         }
     }
+    
+   /* [ServerRpc]
+    public void InitializeWithBuildingServerRpc(string prefabName)
+    {
+        InitializeWithBuilding(prefabName);
+        InitializeWithBuildingClientRpc(prefabName);
+    }
+
+    [ClientRpc]
+    public void InitializeWithBuildingClientRpc(string prefabName)
+    {
+        if (IsOwner) { return; }
+        InitializeWithBuilding(prefabName);
+        
+    }
+*/
+    public void InitializeWithBuilding(string prefabName)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+
+        if (buildingPrefab != null)
+        {
+            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
+            temp = instantiatedObject.GetComponent<Building>();
+            if (temp != null)
+            {
+                temp.SetOwner(OwnerClientId);
+                temp._GridBuildingSystem = this;
+                FollowBuilding();
+            }
+        }
+    }
+    /*
     public void InitializeWithBuilding(GameObject building)
     {
-        if (!IsLocalPlayer)
-            return;
-    
         temp = Instantiate(building, Vector3.zero, Quaternion.identity).GetComponent<Building>();
         temp._GridBuildingSystem = this;
         FollowBuilding();
     }
+    */
     
     public void PlaceBuilding()
     {

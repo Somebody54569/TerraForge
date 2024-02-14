@@ -9,6 +9,12 @@ public class Building : NetworkBehaviour
     public BoundsInt area;
     public GridBuildingSystem _GridBuildingSystem;
 
+    private ulong ownerClientId;
+
+    public void SetOwner(ulong ownerClientId)
+    {
+        this.ownerClientId = ownerClientId;
+    }
     public bool CanBePlaced()
     {
         Vector3Int positionInt = _GridBuildingSystem.gridLayout.LocalToCell(transform.position);
