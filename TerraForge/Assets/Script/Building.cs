@@ -7,20 +7,14 @@ public class Building : NetworkBehaviour
 {
     public bool Placed;
     public BoundsInt area;
-    public GridBuildingSystem _GridBuildingSystem;
-
-    private ulong ownerClientId;
-
-    public void SetOwner(ulong ownerClientId)
-    {
-        this.ownerClientId = ownerClientId;
-    }
+    public PlayerManager _GridBuildingSystem;
+    
     public bool CanBePlaced()
     {
-        Vector3Int positionInt = _GridBuildingSystem.gridLayout.LocalToCell(transform.position);
+        Vector3Int positionInt = _GridBuildingSystem._gridBuildingSystem.gridLayout.LocalToCell(transform.position);
         BoundsInt areaTemp = area;
         areaTemp.position = positionInt;
-        if (_GridBuildingSystem.CanTakeArea(areaTemp))
+        if (_GridBuildingSystem._gridBuildingSystem.CanTakeArea(areaTemp))
         {
             return true;
         }

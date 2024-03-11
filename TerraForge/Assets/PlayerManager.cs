@@ -4,26 +4,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.EventSystems;
+using UnityEngine.Tilemaps;
 
 public class PlayerManager : NetworkBehaviour
 {
     
-    private GridBuildingSystem _gridBuildingSystem;
-    
+    public GridBuildingSystem _gridBuildingSystem;
 
+    [SerializeField] private GameObject UiPlayer;
+
+    public string tempBuilding;
     private void Start()
     {
         _gridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
+        if (IsOwner)
+        {
+            UiPlayer.SetActive(true);
+        }
+        else
+        {
+            UiPlayer.SetActive(false);
+        }
     }
 
     private void Update()
     {
         if (!IsOwner) { return; }
-
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            InitializeWithUnitServerRpc("Unit_Melee");
-        }
+        
         if (!_gridBuildingSystem.temp)
         {
             return;
@@ -59,6 +66,8 @@ public class PlayerManager : NetworkBehaviour
             Destroy(_gridBuildingSystem.temp.gameObject);
         }
     }
+    
+    
     public void PlaceBuilding()
     {
         Vector3Int positionInt = _gridBuildingSystem.gridLayout.LocalToCell(_gridBuildingSystem.temp.transform.position);
@@ -66,9 +75,29 @@ public class PlayerManager : NetworkBehaviour
         areaTemp.position = positionInt;
         _gridBuildingSystem.temp.Placed = true;
         TakeAreaServerRpc(areaTemp);
+        InitializeWithBuildingServerRpc(tempBuilding, _gridBuildingSystem.temp.transform.position);
+        Destroy( _gridBuildingSystem.temp.gameObject);
+  
+        
         //TakeAreaServerRpc(areaTemp);
     }
+    public void InitializeWithBuilding(string prefabName)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
+        if (buildingPrefab != null)
+        {
+            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
+            _gridBuildingSystem.temp = instantiatedObject.GetComponent<Building>();
+            if (_gridBuildingSystem.temp != null)
+            {
+                _gridBuildingSystem.temp._GridBuildingSystem = this;
+                tempBuilding = prefabName;
+                _gridBuildingSystem.FollowBuilding();
+            }
+        }
+    }
+    
     [ServerRpc]
     public void InitializeWithUnitServerRpc(string prefabName)
     {
@@ -77,22 +106,34 @@ public class PlayerManager : NetworkBehaviour
         if (buildingPrefab != null)
         {
             GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
-            instantiatedObject.GetComponent<NetworkObject>().Spawn();
-            // Check if the instantiated object has a NetworkObject component
-            
+            NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
+            if (networkObject != null)
+            {
+                // Assign ownership to the client that requested the initialization
+                networkObject.SpawnWithOwnership(OwnerClientId);
+            }
         }
-        InitializeWithUnitClientRpc(prefabName);
     }
-    [ClientRpc]
-    public void InitializeWithUnitClientRpc(string prefabName)
+    [ServerRpc]
+    public void InitializeWithBuildingServerRpc(string prefabName ,Vector3 positiob)
     {
-       // if (IsOwner) { return; }
         GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
         if (buildingPrefab != null)
         {
-            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
-            instantiatedObject.GetComponent<NetworkObject>().Spawn();
+            GameObject instantiatedObject = Instantiate(buildingPrefab,positiob, Quaternion.identity);
+            _gridBuildingSystem.temp = instantiatedObject.GetComponent<Building>();
+            NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
+            if (networkObject != null)
+            {
+                // Assign ownership to the client that requested the initialization
+                networkObject.SpawnWithOwnership(OwnerClientId);
+                if (_gridBuildingSystem.temp != null)
+                {
+                    _gridBuildingSystem.temp._GridBuildingSystem = this;
+                }
+            }
+            
         }
     }
     [ServerRpc]
@@ -107,4 +148,6 @@ public class PlayerManager : NetworkBehaviour
      //   if (IsOwner) { return; }
         _gridBuildingSystem.TakeArea(area);
     }
+    
+    
 }

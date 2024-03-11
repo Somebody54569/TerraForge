@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using Unity.Netcode;
-public class GridBuildingSystem : NetworkBehaviour
+public class GridBuildingSystem : MonoBehaviour
 {
 //    public static GridBuildingSystem current;
 
@@ -12,7 +12,7 @@ public class GridBuildingSystem : NetworkBehaviour
     public Tilemap mainTileMap;
     public Tilemap TempTileMap;
 
-    private static Dictionary<TileType, TileBase> tileBases = new Dictionary<TileType, TileBase>();
+    public static Dictionary<TileType, TileBase> tileBases = new Dictionary<TileType, TileBase>();
 
     public Building temp;
     public Vector3 prevPos;
@@ -84,22 +84,13 @@ public class GridBuildingSystem : NetworkBehaviour
             temp = instantiatedObject.GetComponent<Building>();
             if (temp != null)
             {
-                temp._GridBuildingSystem = this;
+               // temp._GridBuildingSystem = this;
                 FollowBuilding();
             }
         }
     }
-    
-    public void InitializeWithUnit(string prefabName)
-    {
-        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
-        if (buildingPrefab != null)
-        {
-            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
-            
-        }
-    }
+    
     /*
     public void InitializeWithBuilding(GameObject building)
     {
