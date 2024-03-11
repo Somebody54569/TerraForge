@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,14 +8,19 @@ public class Building : NetworkBehaviour
 {
     public bool Placed;
     public BoundsInt area;
-    public PlayerManager _GridBuildingSystem;
-    
+    public GridBuildingSystem _GridBuildingSystem;
+
+    private void Start()
+    {
+        _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
+    }
+
     public bool CanBePlaced()
     {
-        Vector3Int positionInt = _GridBuildingSystem._gridBuildingSystem.gridLayout.LocalToCell(transform.position);
+        Vector3Int positionInt = _GridBuildingSystem.gridLayout.LocalToCell(transform.position);
         BoundsInt areaTemp = area;
         areaTemp.position = positionInt;
-        if (_GridBuildingSystem._gridBuildingSystem.CanTakeArea(areaTemp))
+        if (_GridBuildingSystem.CanTakeArea(areaTemp))
         {
             return true;
         }

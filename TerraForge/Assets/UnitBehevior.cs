@@ -5,14 +5,12 @@ using Unity.Netcode;
 
 public class UnitBehevior : NetworkBehaviour
 {
+
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float movementSpeed = 4f;
     private Vector2 targetPosition;
-    private ulong ownerClientId;
-    public void SetOwner(ulong ownerClientId)
-    {
-        this.ownerClientId = ownerClientId;
-    }
+
+    public Animator Animator;
     
     private void Update()
     {
@@ -31,11 +29,13 @@ public class UnitBehevior : NetworkBehaviour
         
         if (Vector2.Distance(rb.position, targetPosition) > 0.1f)
         {
+            Animator.SetBool("IsWalk", true);
             Vector2 moveDirection = (targetPosition - (Vector2)rb.position).normalized;
             rb.velocity = moveDirection * movementSpeed;
         }
         else
         {
+            Animator.SetBool("IsWalk", false);
             rb.velocity = Vector2.zero;
         }
     }

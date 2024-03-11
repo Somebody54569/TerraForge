@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
-using Unity.Netcode;
 public class GridBuildingSystem : MonoBehaviour
 {
 //    public static GridBuildingSystem current;
@@ -14,7 +13,7 @@ public class GridBuildingSystem : MonoBehaviour
 
     public static Dictionary<TileType, TileBase> tileBases = new Dictionary<TileType, TileBase>();
 
-    public Building temp;
+    public Building BuildingPlayerTemp;
     public Vector3 prevPos;
     private BoundsInt prevArea;
 
@@ -74,21 +73,7 @@ public class GridBuildingSystem : MonoBehaviour
         
     }
 */
-    public void InitializeWithBuilding(string prefabName)
-    {
-        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
-        if (buildingPrefab != null)
-        {
-            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
-            temp = instantiatedObject.GetComponent<Building>();
-            if (temp != null)
-            {
-               // temp._GridBuildingSystem = this;
-                FollowBuilding();
-            }
-        }
-    }
 
     
     /*
@@ -102,7 +87,7 @@ public class GridBuildingSystem : MonoBehaviour
     
  
 
-    public void FollowBuilding()
+    public void FollowBuilding(Building temp)
     {
         ClearArea();
         temp.area.position = gridLayout.WorldToCell(temp.gameObject.transform.position);

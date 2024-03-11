@@ -1649,7 +1649,7 @@ MonoBehaviour:
   gridLayout: {fileID: 1444563539}
   mainTileMap: {fileID: 26001727}
   TempTileMap: {fileID: 207648032}
-  temp: {fileID: 0}
+  BuildingPlayerTemp: {fileID: 0}
   prevPos: {x: 0, y: 0, z: 0}
 --- !u!156049354 &1444563539
 Grid:
@@ -1693,6 +1693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GlobalObjectIdHash: 2204840761
+  InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0

@@ -10,7 +10,7 @@ public class PlayerManager : NetworkBehaviour
 {
     
     public GridBuildingSystem _gridBuildingSystem;
-
+    public Building BuildingPlayerTemp;
     [SerializeField] private GameObject UiPlayer;
 
     public string tempBuilding;
@@ -31,7 +31,7 @@ public class PlayerManager : NetworkBehaviour
     {
         if (!IsOwner) { return; }
         
-        if (!_gridBuildingSystem.temp)
+        if (!BuildingPlayerTemp)
         {
             return;
         }
@@ -40,22 +40,22 @@ public class PlayerManager : NetworkBehaviour
             return;
         }
 
-        if (!_gridBuildingSystem.temp.Placed)
+        if (!BuildingPlayerTemp.Placed)
         {
             Vector2 touchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int cellPos = _gridBuildingSystem.gridLayout.LocalToCell(touchPos);
             if (_gridBuildingSystem.prevPos != cellPos)
             {
-                _gridBuildingSystem.temp.transform.localPosition =
+                BuildingPlayerTemp.transform.localPosition =
                     _gridBuildingSystem.gridLayout.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f, 0f));
                 _gridBuildingSystem.prevPos = cellPos;
-                _gridBuildingSystem.FollowBuilding();
+                _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
             }
         }
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (_gridBuildingSystem.temp.CanBePlaced())
+            if (BuildingPlayerTemp.CanBePlaced())
             {
                PlaceBuilding();
             }
@@ -63,22 +63,25 @@ public class PlayerManager : NetworkBehaviour
         else if (Input.GetKeyDown(KeyCode.Escape))
         {
             _gridBuildingSystem.ClearArea();
-            Destroy(_gridBuildingSystem.temp.gameObject);
+            Destroy(BuildingPlayerTemp.gameObject);
+            BuildingPlayerTemp = new Building();
         }
     }
     
     
     public void PlaceBuilding()
     {
-        Vector3Int positionInt = _gridBuildingSystem.gridLayout.LocalToCell(_gridBuildingSystem.temp.transform.position);
-        BoundsInt areaTemp = _gridBuildingSystem.temp.area;
+        Vector3Int positionInt = _gridBuildingSystem.gridLayout.LocalToCell(BuildingPlayerTemp.transform.position);
+        BoundsInt areaTemp = BuildingPlayerTemp.area;
         areaTemp.position = positionInt;
-        _gridBuildingSystem.temp.Placed = true;
+        BuildingPlayerTemp.Placed = true;
+        Destroy( BuildingPlayerTemp.gameObject);
+        InitializeWithBuildingServerRpc(tempBuilding, BuildingPlayerTemp.transform.position);
         TakeAreaServerRpc(areaTemp);
-        InitializeWithBuildingServerRpc(tempBuilding, _gridBuildingSystem.temp.transform.position);
-        Destroy( _gridBuildingSystem.temp.gameObject);
-  
-        
+    
+        BuildingPlayerTemp = new Building();
+
+
         //TakeAreaServerRpc(areaTemp);
     }
     public void InitializeWithBuilding(string prefabName)
@@ -88,12 +91,11 @@ public class PlayerManager : NetworkBehaviour
         if (buildingPrefab != null)
         {
             GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
-            _gridBuildingSystem.temp = instantiatedObject.GetComponent<Building>();
-            if (_gridBuildingSystem.temp != null)
+            BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
+            if (BuildingPlayerTemp != null)
             {
-                _gridBuildingSystem.temp._GridBuildingSystem = this;
                 tempBuilding = prefabName;
-                _gridBuildingSystem.FollowBuilding();
+                _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
             }
         }
     }
@@ -115,27 +117,23 @@ public class PlayerManager : NetworkBehaviour
         }
     }
     [ServerRpc]
-    public void InitializeWithBuildingServerRpc(string prefabName ,Vector3 positiob)
+    public void InitializeWithBuildingServerRpc(string prefabName, Vector3 position)
     {
         GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
         if (buildingPrefab != null)
         {
-            GameObject instantiatedObject = Instantiate(buildingPrefab,positiob, Quaternion.identity);
-            _gridBuildingSystem.temp = instantiatedObject.GetComponent<Building>();
+            GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
+            BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
             if (networkObject != null)
             {
-                // Assign ownership to the client that requested the initialization
                 networkObject.SpawnWithOwnership(OwnerClientId);
-                if (_gridBuildingSystem.temp != null)
-                {
-                    _gridBuildingSystem.temp._GridBuildingSystem = this;
-                }
             }
-            
         }
     }
+    
+
     [ServerRpc]
     private void TakeAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
