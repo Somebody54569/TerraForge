@@ -168,6 +168,7 @@ GameObject:
   - component: {fileID: 2493804952788341372}
   - component: {fileID: 2229249735808330275}
   - component: {fileID: 1608800068891963863}
+  - component: {fileID: 1113493473911909496}
   m_Layer: 0
   m_Name: Unit_Melee
   m_TagString: Untagged
@@ -257,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 99916574
+  GlobalObjectIdHash: 3602935568
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -311,7 +312,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 2071578773899060050}
   movementSpeed: 4
+  SpriteRenderer: {fileID: 2702751085314792995}
   Animator: {fileID: 1608800068891963863}
+  NetworkAnimator: {fileID: 1113493473911909496}
 --- !u!50 &2071578773899060050
 Rigidbody2D:
   serializedVersion: 4
@@ -419,6 +422,34 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1113493473911909496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2310937430555032964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d0727d5ae3244e3b569694d3912374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList:
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 2144925183
+    DestinationState: -1785867215
+    TransitionDuration: 0
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
+  - IsCrossFadeExit: 0
+    Layer: 0
+    OriginatingState: 271989410
+    DestinationState: -1785867215
+    TransitionDuration: 0
+    TriggerNameHash: 1080829965
+    TransitionIndex: 0
+  m_Animator: {fileID: 1608800068891963863}
 --- !u!1 &8841573511405821985
 GameObject:
   m_ObjectHideFlags: 0
