@@ -21,7 +21,6 @@ public class LobbiesList : MonoBehaviour
     {
         if (isRefreshing) { return; }
         isRefreshing = true;
-
         try
         {
             QueryLobbiesOptions options = new QueryLobbiesOptions();
