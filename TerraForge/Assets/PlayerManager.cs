@@ -12,6 +12,7 @@ public class PlayerManager : NetworkBehaviour
     public GridBuildingSystem _gridBuildingSystem;
     public Building BuildingPlayerTemp;
     [SerializeField] private GameObject UiPlayer;
+    public List<UnitBehevior> SelectUnit;
 
     public string tempBuilding;
     private void Start()
