@@ -52,7 +52,7 @@ public class LobbiesList : MonoBehaviour
         }
         catch (LobbyServiceException e)
         {
-            Debug.Log(0);
+            Debug.Log(e);
         }
 
         isRefreshing = false;

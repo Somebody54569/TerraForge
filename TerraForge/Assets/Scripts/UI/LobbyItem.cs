@@ -14,7 +14,7 @@ public class LobbyItem : MonoBehaviour
 
     public void Initalise(LobbiesList lobbiesList, Lobby lobby)
     {
-        this.lobbiesList = this.lobbiesList;
+        this.lobbiesList = lobbiesList;
         lobbyNameText.text = lobby.Name;
         lobbyPlayerText.text = $"{lobby.Players.Count}/{lobby.MaxPlayers}";
     }
