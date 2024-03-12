@@ -321,7 +321,7 @@ MonoBehaviour:
   Animator: {fileID: 1608800068891963863}
   NetworkAnimator: {fileID: 1113493473911909496}
   SelectIcon: {fileID: 3293385541176301035}
-  attributeUnit: {fileID: 0}
+  attributeUnit: {fileID: 2229249735808330275}
   TargetToAttack: {fileID: 0}
   DetectRange: {fileID: 5672402485385086394}
 --- !u!50 &2071578773899060050

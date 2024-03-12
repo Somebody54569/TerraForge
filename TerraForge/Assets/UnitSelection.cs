@@ -4,21 +4,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-public class UnitSelection : MonoBehaviour
+using Unity.Netcode;
+
+public class UnitSelection : NetworkBehaviour
 {
     public RectTransform selectionBoxUI;
     private Vector2 boxStartPosition;
     private Vector2 boxEndPosition;
     public LayerMask selectableLayer;
     public PlayerManager PlayerManager;
+    private GameObject TargetTemp;
+    private List<UnitBehevior> tempUnitBeheviors;
+
     void Start()
     {
-        
+        tempUnitBeheviors = new List<UnitBehevior>();
     }
+
 
     // Update is called once per frame
     void Update()
     {
+        if (!IsOwner)
+        {
+            return;
+        }
         if (!IsMouseOverButton())
         {
             
@@ -81,10 +91,7 @@ public class UnitSelection : MonoBehaviour
     void SelectObjectsInBox()
     {
         AllUnSelect();
-        Rect selectionRect = new Rect(boxStartPosition.x, boxStartPosition.y,
-            boxEndPosition.x - boxStartPosition.x,
-            boxEndPosition.y - boxStartPosition.y);
-
+        tempUnitBeheviors.Clear();
         Collider2D[] hitColliders =  Physics2D.OverlapAreaAll(boxStartPosition, boxEndPosition);
 
         foreach (Collider2D collider in hitColliders)
@@ -97,12 +104,37 @@ public class UnitSelection : MonoBehaviour
                     if (selectableObject.CompareTag("Unit"))
                 {
                     PlayerManager.SelectUnit.Add(selectableObject.GetComponent<UnitBehevior>());
-                    selectableObject.GetComponent<UnitBehevior>().ChangeState(state.Select);
+                    tempUnitBeheviors.Add(selectableObject.GetComponent<UnitBehevior>());
+                    selectableObject.GetComponent<UnitBehevior>().ChangeState(state.Select);      
+                    SelectObjectsInBoxServerRpc();
                 }
             }
         }
+ 
     }
+    [ServerRpc]
+    void SelectObjectsInBoxServerRpc()
+    {
+        foreach (var VARIABLE in tempUnitBeheviors)
+        {
+            PlayerManager.SelectUnit.Add(VARIABLE);
+        }
+        SelectObjectsInBoxClientRpc();
 
+    }
+    [ClientRpc]
+    void SelectObjectsInBoxClientRpc()
+    {
+        if (IsOwner)
+        {
+            return;
+        }
+        foreach (var VARIABLE in tempUnitBeheviors)
+        {
+            PlayerManager.SelectUnit.Add(VARIABLE);
+        }
+
+    }
     public void SetTargetByRay()
     {
         RaycastHit2D hit;
@@ -113,10 +145,7 @@ public class UnitSelection : MonoBehaviour
             UnitBehevior unitBehevior =  hit.collider.GetComponent<UnitBehevior>();
             if (!unitBehevior.IsOwner)
             {
-                foreach (var VARIABLE in PlayerManager.SelectUnit)
-                {
-                    VARIABLE.SetTarget(hit.collider.gameObject);
-                }
+                TargetTemp = hit.collider.gameObject;
             }
         }
         if (hit.collider != null && hit.collider.CompareTag("Base"))
@@ -124,11 +153,37 @@ public class UnitSelection : MonoBehaviour
             Building building =  hit.collider.GetComponent<Building>();
             if (!building.IsOwner)
             {
-                foreach (var VARIABLE in PlayerManager.SelectUnit)
-                {
-                    VARIABLE.SetTarget(hit.collider.gameObject);
-                }
+                TargetTemp = hit.collider.gameObject;
             }
+        }
+
+        if (TargetTemp != null)
+        {
+            SetTargetByRayServerRpc();      
+        }
+      
+        
+    }
+    [ServerRpc]
+    public void SetTargetByRayServerRpc()
+    {
+        foreach (var VARIABLE in PlayerManager.SelectUnit)
+        {
+            VARIABLE.SetTarget(TargetTemp);
+            Debug.Log(VARIABLE.name);
+            VARIABLE.TestTarget = TargetTemp.name;
+        }
+        SetTargetByRayClientRpc();
+        
+    }
+    [ClientRpc]
+    public void SetTargetByRayClientRpc()
+    {
+        foreach (var VARIABLE in PlayerManager.SelectUnit)
+        {
+            VARIABLE.SetTarget(TargetTemp);
+            Debug.Log(VARIABLE.name);
+            VARIABLE.TestTarget = TargetTemp.name;
         }
     }
     

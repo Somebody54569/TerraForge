@@ -72,7 +72,7 @@ public class PlayerManager : NetworkBehaviour
         {
             _gridBuildingSystem.ClearArea();
             Destroy(BuildingPlayerTemp.gameObject);
-            BuildingPlayerTemp = new Building();
+            BuildingPlayerTemp = null;
         }
     }
     

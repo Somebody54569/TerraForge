@@ -24,8 +24,11 @@ public class UnitBehevior : NetworkBehaviour
     [SerializeField] private CircleCollider2D DetectRange;
     private bool isSetToForceMove;
     private Vector2 moveDirection;
+
+    public string TestTarget;
     private void Start()
     {
+        TestTarget = "NO";
        ChangeState(state.UnSelect);
        attributeUnit = this.GetComponent<AttributeUnit>();
        AttackRange = attributeUnit.AttackRange;
@@ -181,8 +184,6 @@ public class UnitBehevior : NetworkBehaviour
            DamageToTargetServerRpc();
             attributeUnit.timeSinceLastAttack = 0f;
         }
-       
-       
     }
 
 
@@ -198,13 +199,15 @@ public class UnitBehevior : NetworkBehaviour
     private void DamageToTargetServerRpc()
     {
         TargetToAttack.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
-       // DamageToTargetClientRpc();
+      //  DamageToTargetClientRpc();
     }
     [ClientRpc]
     private void DamageToTargetClientRpc()
     {
-        if (IsOwner) { return; }
-        TargetToAttack.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
+        if (TargetToAttack.GetComponent<AttributeUnit>().IsOwner)
+        {
+            TargetToAttack.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
+        }
     }
 
 }
