@@ -9,14 +9,14 @@ public class NetWorkServer : IDisposable
     private NetworkManager networkManager;
 
     private Dictionary<ulong, string> clientIdAuth = new Dictionary<ulong, string>();
-    private Dictionary<string, UserData> authIdtoUserData = new Dictionary<string, UserData>();
+    private Dictionary<string, UserData> authIdToUserData = new Dictionary<string, UserData>();
 
     public NetWorkServer(NetworkManager networkManager)
     {
         this.networkManager = networkManager;
         
         networkManager.ConnectionApprovalCallback += ApprovalCheck;
-        this.networkManager.OnServerStarted += OnNetworkReady;
+        networkManager.OnServerStarted += OnNetworkReady;
     }
 
     private void OnNetworkReady()
@@ -29,7 +29,7 @@ public class NetWorkServer : IDisposable
         if (clientIdAuth.TryGetValue(clientId, out string authId))
         {
             clientIdAuth.Remove(clientId);
-            authIdtoUserData.Remove(authId);
+            authIdToUserData.Remove(authId);
         }
     }
 
@@ -41,7 +41,7 @@ public class NetWorkServer : IDisposable
         UserData userData = JsonUtility.FromJson<UserData>(payload);
 
         clientIdAuth[request.ClientNetworkId] = userData.userAuthId;
-        authIdtoUserData[userData.userAuthId] = userData;
+        authIdToUserData[userData.userAuthId] = userData;
         Debug.Log(userData.userName);
 
         response.Approved = true;
@@ -60,5 +60,18 @@ public class NetWorkServer : IDisposable
         {
             networkManager.Shutdown();
         }
+    }
+
+    public UserData GetUserDataByClientId(ulong clientId)
+    {
+        if (clientIdAuth.TryGetValue(clientId, out string authId))
+        {
+            if (authIdToUserData.TryGetValue(authId,out UserData data))
+            {
+                return data;
+            }
+            return null;
+        }
+        return null;
     }
 }

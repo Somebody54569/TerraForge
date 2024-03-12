@@ -46,7 +46,7 @@ public class LobbiesList : MonoBehaviour
             foreach (Lobby lobby in lobbies.Results)
             {
                 LobbyItem lobbyItem = Instantiate(lobbyItemPrefab, lobbyItemParent);
-                lobbyItem.Initalise(this, lobby);
+                lobbyItem.Initialise(this, lobby);
             }
         }
         catch (LobbyServiceException e)

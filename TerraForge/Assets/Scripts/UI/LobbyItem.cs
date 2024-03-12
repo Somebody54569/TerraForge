@@ -12,9 +12,10 @@ public class LobbyItem : MonoBehaviour
     private LobbiesList lobbiesList;
     private Lobby lobby;
 
-    public void Initalise(LobbiesList lobbiesList, Lobby lobby)
+    public void Initialise(LobbiesList lobbiesList, Lobby lobby)
     {
         this.lobbiesList = lobbiesList;
+        this.lobby = lobby;
         lobbyNameText.text = lobby.Name;
         lobbyPlayerText.text = $"{lobby.Players.Count}/{lobby.MaxPlayers}";
     }
