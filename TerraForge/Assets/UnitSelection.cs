@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-
 public class UnitSelection : MonoBehaviour
 {
     public RectTransform selectionBoxUI;
@@ -68,6 +67,15 @@ public class UnitSelection : MonoBehaviour
                     selectionBoxUI.sizeDelta = sizeDelta;
                 }
             }
+
+            if (Input.GetMouseButton(1))
+            {
+                if (PlayerManager.SelectUnit.Count > 0)
+                {
+                    SetTargetByRay();
+                }
+            }
+           
         }
     }
     void SelectObjectsInBox()
@@ -94,6 +102,36 @@ public class UnitSelection : MonoBehaviour
             }
         }
     }
+
+    public void SetTargetByRay()
+    {
+        RaycastHit2D hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity);
+        if (hit.collider != null && hit.collider.CompareTag("Unit"))
+        {
+            UnitBehevior unitBehevior =  hit.collider.GetComponent<UnitBehevior>();
+            if (!unitBehevior.IsOwner)
+            {
+                foreach (var VARIABLE in PlayerManager.SelectUnit)
+                {
+                    VARIABLE.SetTarget(hit.collider.gameObject);
+                }
+            }
+        }
+        if (hit.collider != null && hit.collider.CompareTag("Base"))
+        {
+            Building building =  hit.collider.GetComponent<Building>();
+            if (!building.IsOwner)
+            {
+                foreach (var VARIABLE in PlayerManager.SelectUnit)
+                {
+                    VARIABLE.SetTarget(hit.collider.gameObject);
+                }
+            }
+        }
+    }
+    
     public void AllUnSelect()
     {
         foreach (var VARIABLE in  PlayerManager.SelectUnit)

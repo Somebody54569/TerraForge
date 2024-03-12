@@ -16,19 +16,21 @@ public class UnitBehevior : NetworkBehaviour
     public Animator Animator;
     public NetworkAnimator NetworkAnimator;
     private state currentState;
+    private UnitState currentUnitState;
     [SerializeField] private GameObject SelectIcon;
     private float AttackRange;
     public AttributeUnit attributeUnit;
     public GameObject TargetToAttack;
     [SerializeField] private CircleCollider2D DetectRange;
     private bool isSetToForceMove;
+    private Vector2 moveDirection;
     private void Start()
     {
        ChangeState(state.UnSelect);
        attributeUnit = this.GetComponent<AttributeUnit>();
        AttackRange = attributeUnit.AttackRange;
        DetectRange.radius = AttackRange + 1.5f;
-
+       currentUnitState = UnitState.Idle;
     }
     
 
@@ -47,6 +49,7 @@ public class UnitBehevior : NetworkBehaviour
                     SetTarget(null);
                     targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     isSetToForceMove = true;
+                    currentUnitState = UnitState.Walk;
                 }
             }
             CheckIconSelect();
@@ -60,10 +63,12 @@ public class UnitBehevior : NetworkBehaviour
        {
            if (!isSetToForceMove)
            {
+               currentUnitState = UnitState.Walk;
                MoveToTargetAndAttack();    
            }
            else
            {
+               currentUnitState = UnitState.Walk;
                MoveTo();
            }
                 
@@ -107,24 +112,27 @@ public class UnitBehevior : NetworkBehaviour
 
     private void MoveTo()
     {
-        if (Vector2.Distance(rb.position, targetPosition) > 0.1f)
+        if (currentUnitState == UnitState.Walk)
         {
-            //  Animator.SetBool("IsWalk", true);
-            FlipXWalkServerRpc(true);
-            Vector2 moveDirection = (targetPosition - (Vector2) rb.position).normalized;
-            rb.velocity = moveDirection * movementSpeed;
-           
-            if (moveDirection.x > 0) // Moving right
-                SpriteRenderer.flipX = false;
-            else if (moveDirection.x < 0) // Moving left
-                SpriteRenderer.flipX = true;
+            if (Vector2.Distance(rb.position, targetPosition) > 0.1f)
+            {
+                currentUnitState = UnitState.Walk;
+                //  Animator.SetBool("IsWalk", true);
+                FlipXWalkServerRpc(true); 
+                moveDirection = (targetPosition - (Vector2) rb.position).normalized;
+                rb.velocity = moveDirection * movementSpeed;
+                FlipSprite();
+
+            }
+            else
+            {
+                currentUnitState = UnitState.Idle;
+                isSetToForceMove = false;
+                FlipXWalkServerRpc(false);
+                rb.velocity = Vector2.zero;
+            }     
         }
-        else
-        {
-            isSetToForceMove = false;
-            FlipXWalkServerRpc(false);
-            rb.velocity = Vector2.zero;
-        }
+       
     }
     
     private void MoveToTargetAndAttack()
@@ -177,24 +185,39 @@ public class UnitBehevior : NetworkBehaviour
        
     }
 
+
+    private void FlipSprite()
+    {
+        if (moveDirection.x > 0) // Moving right
+            SpriteRenderer.flipX = false;
+        else if (moveDirection.x < 0) // Moving left
+            SpriteRenderer.flipX = true;
+    }
+  
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
         TargetToAttack.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
-      //  DamageToTargetClientRpc();
+       // DamageToTargetClientRpc();
     }
-    
     [ClientRpc]
     private void DamageToTargetClientRpc()
     {
-        if(IsOwner) { return; }
+        if (IsOwner) { return; }
         TargetToAttack.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
     }
+
 }
 
 public enum state
 {
     Select,
     UnSelect
+}
+
+public enum UnitState
+{
+    Idle,
+    Walk,
 }
 

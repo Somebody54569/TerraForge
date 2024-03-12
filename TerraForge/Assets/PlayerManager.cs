@@ -86,10 +86,6 @@ public class PlayerManager : NetworkBehaviour
         Destroy( BuildingPlayerTemp.gameObject);
         InitializeWithBuildingServerRpc(tempBuilding, BuildingPlayerTemp.transform.position);
         TakeAreaServerRpc(areaTemp);
-    
-        BuildingPlayerTemp = null;
-
-
         //TakeAreaServerRpc(areaTemp);
     }
     public void InitializeWithBuilding(string prefabName)
@@ -103,6 +99,7 @@ public class PlayerManager : NetworkBehaviour
             if (BuildingPlayerTemp != null)
             {
                 tempBuilding = prefabName;
+                
                 _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
             }
         }
@@ -141,16 +138,19 @@ public class PlayerManager : NetworkBehaviour
         if (buildingPrefab != null)
         {
             GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
-            BuildingPlayer.Add(instantiatedObject.GetComponent<Building>());
             BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
+            BuildingPlayer.Add(BuildingPlayerTemp);
             if (networkObject != null)
             {
                 networkObject.SpawnWithOwnership(OwnerClientId);
             }
+            BuildingPlayerTemp = null;
+
         }
     }
     
+  
 
     [ServerRpc]
     private void TakeAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)

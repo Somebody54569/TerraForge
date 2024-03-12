@@ -322,6 +322,7 @@ MonoBehaviour:
   NetworkAnimator: {fileID: 1113493473911909496}
   SelectIcon: {fileID: 3293385541176301035}
   attributeUnit: {fileID: 0}
+  TargetToAttack: {fileID: 0}
   DetectRange: {fileID: 5672402485385086394}
 --- !u!50 &2071578773899060050
 Rigidbody2D:
@@ -335,8 +336,8 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
+  m_Mass: 50
+  m_LinearDrag: 50
   m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -346,7 +347,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
