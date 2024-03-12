@@ -6,16 +6,15 @@ using UnityEngine;
 
 public class AttributeUnit : NetworkBehaviour
 {
-    public NetworkVariable<int> CurrentCost = new NetworkVariable<int>();
-    [field: SerializeField] public int MaxCost { get; private set; } = 100;
-    
+  
     public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>();
     [field: SerializeField] public int MaxHealth { get; private set; } = 100;
-    
-    public NetworkVariable<int> CurrentDmg = new NetworkVariable<int>();
-    [field: SerializeField] public int MaxDmg { get; private set; } = 100;
 
-    public int AttackRange;
+    [SerializeField] public int Cost;
+    [SerializeField] public int Dmg;
+    public float timeSinceLastAttack = 0f;
+    [SerializeField] public float AttackCooldown;
+    public float AttackRange;
     private bool isDead;
 
     public override void OnNetworkSpawn()
@@ -23,8 +22,8 @@ public class AttributeUnit : NetworkBehaviour
         if (!IsServer) { return; }
 
         CurrentHealth.Value = MaxHealth;
-        CurrentCost.Value = MaxCost;
-        CurrentDmg.Value = MaxDmg;
+
+
     }
 
     public void TakeDamage(int damageValue)
