@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class Attribute : NetworkBehaviour
+public class AttributeUnit : NetworkBehaviour
 {
     public NetworkVariable<int> CurrentCost = new NetworkVariable<int>();
     [field: SerializeField] public int MaxCost { get; private set; } = 100;
@@ -14,8 +14,8 @@ public class Attribute : NetworkBehaviour
     
     public NetworkVariable<int> CurrentDmg = new NetworkVariable<int>();
     [field: SerializeField] public int MaxDmg { get; private set; } = 100;
-    
-    
+
+    public int AttackRange;
     private bool isDead;
 
     public override void OnNetworkSpawn()

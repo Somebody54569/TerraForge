@@ -112,18 +112,18 @@ TextureImporter:
       name: Melee_Attack-Sheet_0
       rect:
         serializedVersion: 2
-        x: 2
+        x: 0
         y: 0
-        width: 20
+        width: 24
         height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.42, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 99e3c7dda302ac0b0800000000000000
+      spriteID: b7f8a8d17913ff94a9b0abf5eb5797dc
       internalID: -5707714140542583143
       vertices: []
       indices: 
@@ -133,18 +133,18 @@ TextureImporter:
       name: Melee_Attack-Sheet_1
       rect:
         serializedVersion: 2
-        x: 26
+        x: 24
         y: 0
-        width: 21
+        width: 24
         height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.42, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 3ad370e4b3c8d9020800000000000000
+      spriteID: 3490ee569615ca64b9ea9d97c5de79bc
       internalID: 2350188766897323427
       vertices: []
       indices: 
@@ -154,18 +154,18 @@ TextureImporter:
       name: Melee_Attack-Sheet_2
       rect:
         serializedVersion: 2
-        x: 49
+        x: 48
         y: 0
-        width: 13
+        width: 24
         height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.42, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 22a659dd751810470800000000000000
+      spriteID: 4d60ef5fd46188b44b208da21a67755b
       internalID: 8359104597756045858
       vertices: []
       indices: 
@@ -175,18 +175,18 @@ TextureImporter:
       name: Melee_Attack-Sheet_3
       rect:
         serializedVersion: 2
-        x: 74
+        x: 72
         y: 0
-        width: 21
+        width: 24
         height: 24
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 9
+      pivot: {x: 0.42, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 7a3c5019f584ff670800000000000000
+      spriteID: 891dc81e97a8c5948bca2c38345d5193
       internalID: 8574651790828880807
       vertices: []
       indices: 
@@ -195,7 +195,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 4189dd143ab0085469e30784d33cee56
     internalID: 0
     vertices: []
     indices: 

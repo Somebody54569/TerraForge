@@ -11,20 +11,27 @@ public class PlayerManager : NetworkBehaviour
     
     public GridBuildingSystem _gridBuildingSystem;
     public Building BuildingPlayerTemp;
-    [SerializeField] private GameObject UiPlayer;
+    [SerializeField] private List<GameObject> UiPlayer;
     public List<UnitBehevior> SelectUnit;
-
+    public List<Building> BuildingPlayer;
     public string tempBuilding;
     private void Start()
     {
         _gridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
         if (IsOwner)
         {
-            UiPlayer.SetActive(true);
+            foreach (var VARIABLE in UiPlayer)
+            {
+                VARIABLE.SetActive(true);
+            }
+ 
         }
         else
         {
-            UiPlayer.SetActive(false);
+            foreach (var VARIABLE in UiPlayer)
+            {
+                VARIABLE.SetActive(false);
+            }
         }
     }
 
@@ -80,7 +87,7 @@ public class PlayerManager : NetworkBehaviour
         InitializeWithBuildingServerRpc(tempBuilding, BuildingPlayerTemp.transform.position);
         TakeAreaServerRpc(areaTemp);
     
-        BuildingPlayerTemp = new Building();
+        BuildingPlayerTemp = null;
 
 
         //TakeAreaServerRpc(areaTemp);
@@ -108,7 +115,16 @@ public class PlayerManager : NetworkBehaviour
 
         if (buildingPrefab != null)
         {
-            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
+            Vector3 Spawnpoint = new Vector3();
+            foreach (Building building in BuildingPlayer)
+            {
+                if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
+                {
+                    Spawnpoint = building.SpawnPoint.position;
+                }
+            }
+            GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
+            instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
             if (networkObject != null)
             {
@@ -125,6 +141,7 @@ public class PlayerManager : NetworkBehaviour
         if (buildingPrefab != null)
         {
             GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
+            BuildingPlayer.Add(instantiatedObject.GetComponent<Building>());
             BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
             if (networkObject != null)

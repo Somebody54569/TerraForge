@@ -9,7 +9,9 @@ public class Building : NetworkBehaviour
     public bool Placed;
     public BoundsInt area;
     public GridBuildingSystem _GridBuildingSystem;
-
+    public BuildingType BuildingTypeNow;
+    public Transform SpawnPoint;
+    
     private void Start()
     {
         _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
@@ -28,5 +30,11 @@ public class Building : NetworkBehaviour
         return false;
     }
     
+    public enum BuildingType
+    {
+        MotherBase,
+        UnitBase,
+        VehicleBase
+    }
 }
     

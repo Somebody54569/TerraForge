@@ -10,23 +10,28 @@ public class UnitBehevior : NetworkBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float movementSpeed = 4f;
-    private Vector2 targetPosition;
+    public Vector2 targetPosition;
     public SpriteRenderer SpriteRenderer;
     public Animator Animator;
     public NetworkAnimator NetworkAnimator;
     private state currentState;
     [SerializeField] private GameObject SelectIcon;
-
+    public AttributeUnit Attribute;
     private void Start()
     {
        ChangeState(state.UnSelect);
+     
     }
     
 
     private void Update()
     {
-        if (!IsOwner) { return; }
+        if (!IsOwner)
+        {
             SelectIcon.SetActive(false);
+            return;
+        }
+        
             if (Input.GetMouseButtonDown(1))
             {
                 if (currentState == state.Select)
@@ -83,7 +88,11 @@ public class UnitBehevior : NetworkBehaviour
                 break;
         }
     }
-    
+
+    private void Attack()
+    {
+        
+    }
 }
 
 public enum state

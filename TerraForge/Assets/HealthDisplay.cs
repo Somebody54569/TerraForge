@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class HealthDisplay : NetworkBehaviour
 {
     [Header("References")]
-    [SerializeField] private Attribute  health;
+    [SerializeField] private AttributeUnit  health;
     [SerializeField] private Image healthBarImage;
 
     public override void OnNetworkSpawn()
