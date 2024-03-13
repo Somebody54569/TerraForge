@@ -140,16 +140,35 @@ public class PlayerManager : NetworkBehaviour
             GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
             BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
-            BuildingPlayer.Add(BuildingPlayerTemp);
             if (networkObject != null)
             {
                 networkObject.SpawnWithOwnership(OwnerClientId);
             }
+
+            if (networkObject.OwnerClientId == this.OwnerClientId)
+            {
+                BuildingPlayer.Add(BuildingPlayerTemp);
+            }
             BuildingPlayerTemp = null;
 
         }
+        InitializeWithBuildingClientRpc(prefabName);
     }
-    
+    [ClientRpc]
+    public void InitializeWithBuildingClientRpc(string prefabName)
+    {
+        if (IsOwner)
+        {
+            return;
+        }
+        /*
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+
+        if (buildingPrefab != null)
+        {
+            BuildingPlayer.Add(BuildingPlayerTemp);
+        }*/
+    }
   
 
     [ServerRpc]

@@ -88,7 +88,7 @@ public class UnitSelection : NetworkBehaviour
            
         }
     }
-    void SelectObjectsInBox()
+    private void SelectObjectsInBox()
     {
         AllUnSelect();
         tempUnitBeheviors.Clear();
@@ -101,40 +101,77 @@ public class UnitSelection : NetworkBehaviour
             // Check if the object is in the selectable layer
             if (((1 << selectableObject.layer) & selectableLayer) != 0)
             {
-                    if (selectableObject.CompareTag("Unit"))
+                if (selectableObject.CompareTag("Unit"))
                 {
-                    PlayerManager.SelectUnit.Add(selectableObject.GetComponent<UnitBehevior>());
-                    tempUnitBeheviors.Add(selectableObject.GetComponent<UnitBehevior>());
-                    selectableObject.GetComponent<UnitBehevior>().ChangeState(state.Select);      
-                    SelectObjectsInBoxServerRpc();
+                    if (selectableObject.GetComponent<UnitBehevior>().IsOwner)
+                    {
+                        PlayerManager.SelectUnit.Add(selectableObject.GetComponent<UnitBehevior>());
+                        tempUnitBeheviors.Add(selectableObject.GetComponent<UnitBehevior>());
+                        selectableObject.GetComponent<UnitBehevior>().ChangeState(state.Select);            
+                    }
                 }
             }
         }
+     //   SelectObjectsInBoxServerRpc();
  
     }
+    /*
     [ServerRpc]
-    void SelectObjectsInBoxServerRpc()
+    private void SelectObjectsInBoxServerRpc()
     {
-        foreach (var VARIABLE in tempUnitBeheviors)
+        Collider2D[] hitColliders =  Physics2D.OverlapAreaAll(boxStartPosition, boxEndPosition);
+
+        foreach (Collider2D collider in hitColliders)
         {
-            PlayerManager.SelectUnit.Add(VARIABLE);
+            GameObject selectableObject = collider.gameObject;
+
+            // Check if the object is in the selectable layer
+            if (((1 << selectableObject.layer) & selectableLayer) != 0)
+            {
+                if (selectableObject.CompareTag("Unit"))
+                {
+                    if (selectableObject.GetComponent<UnitBehevior>().IsOwner)
+                    {
+                        PlayerManager.SelectUnit.Add(selectableObject.GetComponent<UnitBehevior>());
+                        tempUnitBeheviors.Add(selectableObject.GetComponent<UnitBehevior>());
+                        selectableObject.GetComponent<UnitBehevior>().ChangeState(state.Select);            
+                    }
+                }
+            }
         }
         SelectObjectsInBoxClientRpc();
 
     }
     [ClientRpc]
-    void SelectObjectsInBoxClientRpc()
+    private void SelectObjectsInBoxClientRpc()
     {
         if (IsOwner)
         {
             return;
         }
-        foreach (var VARIABLE in tempUnitBeheviors)
-        {
-            PlayerManager.SelectUnit.Add(VARIABLE);
-        }
+        Collider2D[] hitColliders =  Physics2D.OverlapAreaAll(boxStartPosition, boxEndPosition);
 
-    }
+        foreach (Collider2D collider in hitColliders)
+        {
+            GameObject selectableObject = collider.gameObject;
+
+            // Check if the object is in the selectable layer
+            if (((1 << selectableObject.layer) & selectableLayer) != 0)
+            {
+                if (selectableObject.CompareTag("Unit"))
+                {
+                    if (selectableObject.GetComponent<UnitBehevior>().IsOwner)
+                    {
+                        PlayerManager.SelectUnit.Add(selectableObject.GetComponent<UnitBehevior>());
+                        tempUnitBeheviors.Add(selectableObject.GetComponent<UnitBehevior>());
+                        selectableObject.GetComponent<UnitBehevior>().ChangeState(state.Select);            
+                    }
+                }
+            }
+        }
+        
+
+    }*/
     public void SetTargetByRay()
     {
         RaycastHit2D hit;
@@ -179,6 +216,10 @@ public class UnitSelection : NetworkBehaviour
     [ClientRpc]
     public void SetTargetByRayClientRpc()
     {
+        if (IsOwner)
+        {
+            return;
+        }
         foreach (var VARIABLE in PlayerManager.SelectUnit)
         {
             VARIABLE.SetTarget(TargetTemp);

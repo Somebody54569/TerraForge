@@ -26,7 +26,7 @@ public class DetectAndDmg : MonoBehaviour
             }
         }
 
-        if (col.GetComponent<UnitBehevior>()!= null)
+        if (col.GetComponent<AttributeUnit>()!= null)
         {
             if (Unit.TargetToAttack == null)
             {
