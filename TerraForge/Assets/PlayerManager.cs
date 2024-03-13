@@ -5,6 +5,7 @@ using UnityEngine;
 using Unity.Netcode;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
+using TMPro;
 
 public class PlayerManager : NetworkBehaviour
 {
@@ -12,9 +13,13 @@ public class PlayerManager : NetworkBehaviour
     public GridBuildingSystem _gridBuildingSystem;
     public Building BuildingPlayerTemp;
     [SerializeField] private List<GameObject> UiPlayer;
+    [SerializeField] private TMP_Text ResourceText;
     public List<UnitBehevior> SelectUnit;
     public List<Building> BuildingPlayer;
     public string tempBuilding;
+    public int PlayerResource;
+    public int PlayerResourceRiseRate;
+    
     private void Start()
     {
         _gridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
@@ -37,6 +42,10 @@ public class PlayerManager : NetworkBehaviour
 
     private void Update()
     {
+        
+        float resourceIncrease = PlayerResourceRiseRate * Time.deltaTime;
+        PlayerResource += (int)resourceIncrease;
+        ResourceText.text = PlayerResource.ToString();
         if (!IsOwner) { return; }
         
         if (!BuildingPlayerTemp)
@@ -94,13 +103,17 @@ public class PlayerManager : NetworkBehaviour
 
         if (buildingPrefab != null)
         {
-            GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
-            BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
-            if (BuildingPlayerTemp != null)
+            if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost)
             {
-                tempBuilding = prefabName;
-                
-                _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
+                GameObject instantiatedObject = Instantiate(buildingPrefab, Vector3.zero, Quaternion.identity);
+                BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
+                PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+                if (BuildingPlayerTemp != null)
+                {
+                    tempBuilding = prefabName;
+
+                    _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
+                }
             }
         }
     }
@@ -112,22 +125,27 @@ public class PlayerManager : NetworkBehaviour
 
         if (buildingPrefab != null)
         {
-            Vector3 Spawnpoint = new Vector3();
-            foreach (Building building in BuildingPlayer)
+            if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost )
             {
-                if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
+                Vector3 Spawnpoint = new Vector3();
+                foreach (Building building in BuildingPlayer)
                 {
-                    Spawnpoint = building.SpawnPoint.position;
+                    if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
+                    {
+                        Spawnpoint = building.SpawnPoint.position;
+                    }
                 }
+                GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
+                instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
+                NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
+                PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+                if (networkObject != null)
+                {
+                    // Assign ownership to the client that requested the initialization
+                    networkObject.SpawnWithOwnership(OwnerClientId);
+                }       
             }
-            GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
-            instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
-            NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
-            if (networkObject != null)
-            {
-                // Assign ownership to the client that requested the initialization
-                networkObject.SpawnWithOwnership(OwnerClientId);
-            }
+         
         }
     }
     [ServerRpc]

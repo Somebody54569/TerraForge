@@ -324,6 +324,7 @@ MonoBehaviour:
   attributeUnit: {fileID: 2229249735808330275}
   TargetToAttack: {fileID: 0}
   DetectRange: {fileID: 5672402485385086394}
+  TestTarget: 
 --- !u!50 &2071578773899060050
 Rigidbody2D:
   serializedVersion: 4
@@ -403,7 +404,7 @@ MonoBehaviour:
   CurrentHealth:
     m_InternalValue: 0
   <MaxHealth>k__BackingField: 100
-  Cost: 0
+  Cost: 150
   Dmg: 35
   timeSinceLastAttack: 0
   AttackCooldown: 0.8

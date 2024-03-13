@@ -6,6 +6,23 @@ using UnityEngine.Tilemaps;
 public class GridBuildingSystem : MonoBehaviour
 {
 //    public static GridBuildingSystem current;
+    private static GridBuildingSystem instance;
+
+    private void Awake()
+    {
+        // If an instance already exists, destroy this one
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        // Set this instance as the singleton instance
+        instance = this;
+
+        // Don't destroy this GameObject when loading new scenes
+        DontDestroyOnLoad(gameObject);
+    }
 
     public GridLayout gridLayout;
     public Tilemap mainTileMap;
