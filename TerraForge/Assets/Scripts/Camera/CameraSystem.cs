@@ -16,9 +16,9 @@ public class CameraSystem : NetworkBehaviour
     [SerializeField] private int ownerPriority = 15;
     
     [Header("Edge Scrolling Setting")]
+    [SerializeField] private bool useEdgeScrolling;
     [SerializeField] private float edgeScrollingSpeed;
     [SerializeField] private int edgeScrollSize = 10;
-    [SerializeField] private bool useEdgeScrolling;
     
     [Header("Drag Pan Setting")]
     [SerializeField] private bool useDragPan;

@@ -319,13 +319,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11336e2b6d0e4c641a193a05c5c5ee5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cinemachineVirtualCamera: {fileID: 7002943533689542481}
+  virtualCamera: {fileID: 7002943533689542481}
   moveSpeed: 20
+  ownerPriority: 15
   edgeScrollingSpeed: 10
+  edgeScrollSize: 10
   useEdgeScrolling: 0
   useDragPan: 1
-  edgeScrollSize: 10
   dragPanSpeed: 10
+  zoomSpeed: 10
+  FOVMax: 10
+  FOVMin: 1
+  targetFOV: 5
 --- !u!1 &2412969579060021852
 GameObject:
   m_ObjectHideFlags: 0
