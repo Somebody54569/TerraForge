@@ -19,6 +19,8 @@ public class PlayerManager : NetworkBehaviour
     public string tempBuilding;
     public int PlayerResource;
     public int PlayerResourceRiseRate;
+
+    public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
     
     private void Start()
     {
@@ -30,6 +32,17 @@ public class PlayerManager : NetworkBehaviour
                 VARIABLE.SetActive(true);
             }
  
+        }
+        else if (IsServer)
+        {
+            UserData userData =
+                HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
+            PlayerColorIndex.Value = userData.userColorIndex;
+            
+            foreach (var VARIABLE in UiPlayer)
+            {
+                VARIABLE.SetActive(false);
+            }
         }
         else
         {
