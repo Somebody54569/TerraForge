@@ -2,31 +2,44 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class CameraSystem : MonoBehaviour
+public class CameraSystem : NetworkBehaviour
 {
-    [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
+    [Header("References")]
+    [SerializeField] private CinemachineVirtualCamera virtualCamera;
     
+    [Header("Setting")]
     [SerializeField] float moveSpeed;
-    [SerializeField] private float edgeScrollingSpeed;
-
-    [SerializeField] private bool useEdgeScrolling;
-    [SerializeField] private bool useDragPan;
+    [SerializeField] private int ownerPriority = 15;
     
-    [SerializeField] private int edgeScrollSize = 10; 
-
+    [Header("Edge Scrolling Setting")]
+    [SerializeField] private float edgeScrollingSpeed;
+    [SerializeField] private int edgeScrollSize = 10;
+    [SerializeField] private bool useEdgeScrolling;
+    
+    [Header("Drag Pan Setting")]
+    [SerializeField] private bool useDragPan;
     [SerializeField] float dragPanSpeed = 10f;
     private Vector3 dragOrigin;
     private bool dragPanMoveActive = false;
     private Vector2 lastMousePosition;
 
+    [Header("Zoom Setting")]
     [SerializeField] private float zoomSpeed = 10f;
     [SerializeField] private float FOVMax = 10;
     [SerializeField] private float FOVMin = 1;
-    private float targetFOV = 5f;
-    
-    // Update is called once per frame
+    [SerializeField] private float targetFOV = 5f; //StartFOV
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            virtualCamera.Priority = ownerPriority;
+        }
+    }
     
     void Update()
     {
@@ -120,7 +133,7 @@ public class CameraSystem : MonoBehaviour
 
         targetFOV = Mathf.Clamp(targetFOV, FOVMin, FOVMax);
         
-        cinemachineVirtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(cinemachineVirtualCamera.m_Lens.OrthographicSize, targetFOV, Time.deltaTime * zoomSpeed);
+        virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(virtualCamera.m_Lens.OrthographicSize, targetFOV, Time.deltaTime * zoomSpeed);
     }
     
 }
