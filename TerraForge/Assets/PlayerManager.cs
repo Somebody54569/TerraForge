@@ -19,9 +19,24 @@ public class PlayerManager : NetworkBehaviour
     public string tempBuilding;
     public int PlayerResource;
     public int PlayerResourceRiseRate;
-
-    public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
     
+    //Color
+    [SerializeField] private SpriteRenderer playerSprites;
+    [SerializeField] private Color[] playerColor;
+    [SerializeField] private int colorIndex;
+    public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
+
+    public override void OnNetworkSpawn()
+    {
+        if (IsServer)
+        {
+            UserData userData =
+                HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
+
+            PlayerColorIndex.Value = userData.userColorIndex;
+        }
+    }
+
     private void Start()
     {
         _gridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
@@ -35,10 +50,6 @@ public class PlayerManager : NetworkBehaviour
         }
         else if (IsServer)
         {
-            UserData userData =
-                HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
-            PlayerColorIndex.Value = userData.userColorIndex;
-            
             foreach (var VARIABLE in UiPlayer)
             {
                 VARIABLE.SetActive(false);
@@ -51,6 +62,8 @@ public class PlayerManager : NetworkBehaviour
                 VARIABLE.SetActive(false);
             }
         }
+        HandlePlayerColorChanged(0, PlayerColorIndex.Value);
+        PlayerColorIndex.OnValueChanged += HandlePlayerColorChanged;
     }
 
     private void Update()
@@ -131,6 +144,16 @@ public class PlayerManager : NetworkBehaviour
         }
     }
     
+    private void HandlePlayerColorChanged(int oldIndex, int newIndex)
+    {
+        colorIndex = newIndex;
+    }
+    
+    private void OnDestroy()
+    {
+        PlayerColorIndex.OnValueChanged -= HandlePlayerColorChanged;
+    }
+    
     [ServerRpc]
     public void InitializeWithUnitServerRpc(string prefabName)
     {
@@ -156,9 +179,11 @@ public class PlayerManager : NetworkBehaviour
                 {
                     // Assign ownership to the client that requested the initialization
                     networkObject.SpawnWithOwnership(OwnerClientId);
-                }       
+                }
+
+                playerSprites = instantiatedObject.GetComponent<SpriteRenderer>();
+                playerSprites.color = playerColor[colorIndex];
             }
-         
         }
     }
     [ServerRpc]
