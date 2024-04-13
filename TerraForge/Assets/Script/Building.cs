@@ -12,6 +12,17 @@ public class Building : NetworkBehaviour
     public BuildingType BuildingTypeNow;
     public Transform SpawnPoint;
     
+    //[SerializeField] private SpriteRenderer minimapIconRenderer;
+    //[SerializeField] private Color ownerColorOnMap;
+    
+    /*public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            minimapIconRenderer.color = ownerColorOnMap;
+        }
+    }*/
+    
     private void Start()
     {
         _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
