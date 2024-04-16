@@ -24,8 +24,18 @@ public class UnitBehevior : NetworkBehaviour
     [SerializeField] private CircleCollider2D DetectRange;
     private bool isSetToForceMove;
     private Vector2 moveDirection;
-
     public string TestTarget;
+    
+    //[SerializeField] private SpriteRenderer minimapIconRenderer;
+    //[SerializeField] private Color ownerColorOnMap;
+    /*public override void OnNetworkSpawn()
+    {
+        if (IsOwner)
+        {
+            minimapIconRenderer.color = ownerColorOnMap;
+        }
+    }*/
+
     private void Start()
     {
         TestTarget = "NO";
