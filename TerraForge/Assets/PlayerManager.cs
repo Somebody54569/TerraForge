@@ -40,13 +40,18 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        float resourceIncrease = PlayerResourceRiseRate * Time.deltaTime;
+        PlayerResource += (int)resourceIncrease;    
+    }
+
     private void Update()
     {
-        
-        float resourceIncrease = PlayerResourceRiseRate * Time.deltaTime;
-        PlayerResource += (int)resourceIncrease;
-        ResourceText.text = PlayerResource.ToString();
+
         if (!IsOwner) { return; }
+        
+        ResourceText.text = PlayerResource.ToString();
         
         if (!BuildingPlayerTemp)
         {
