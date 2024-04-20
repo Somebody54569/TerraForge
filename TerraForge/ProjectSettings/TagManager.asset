@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Unit
   - Base
+  - TopLeft
+  - BottomRight
   layers:
   - Default
   - TransparentFX
