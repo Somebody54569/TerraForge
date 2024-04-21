@@ -11,6 +11,7 @@ public class Building : NetworkBehaviour
     public GridBuildingSystem _GridBuildingSystem;
     public BuildingType BuildingTypeNow;
     public Transform SpawnPoint;
+    public PlayerManager _Player;
     
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
@@ -26,6 +27,7 @@ public class Building : NetworkBehaviour
     private void Start()
     {
         _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
+        Placed = false;
     }
 
     public bool CanBePlaced()
@@ -40,6 +42,8 @@ public class Building : NetworkBehaviour
 
         return false;
     }
+    
+    
     
     public enum BuildingType
     {
