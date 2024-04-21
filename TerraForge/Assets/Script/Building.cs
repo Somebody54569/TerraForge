@@ -11,8 +11,7 @@ public class Building : NetworkBehaviour
     public GridBuildingSystem _GridBuildingSystem;
     public BuildingType BuildingTypeNow;
     public Transform SpawnPoint;
-    public PlayerManager _Player;
-    
+
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
     

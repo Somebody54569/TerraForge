@@ -15,7 +15,7 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private List<GameObject> UiPlayer;
     [SerializeField] private TMP_Text ResourceText;
     public List<UnitBehevior> SelectUnit;
-    public List<Building> BuildingPlayer;
+    public List<GameObject> BuildingPlayer;
     public string tempBuilding;
     public int PlayerResource;
     public int PlayerResourceRiseRate;
@@ -133,9 +133,9 @@ public class PlayerManager : NetworkBehaviour
         {
             VARIABLE.SetActive(false);
         }
-        foreach (Building building in BuildingPlayer)
+        foreach (GameObject building in BuildingPlayer)
         { 
-            switch (building.BuildingTypeNow)
+            switch (building.GetComponent<Building>().BuildingTypeNow)
             {
                 case Building.BuildingType.MotherBase:
                     foreach (GameObject button in buildbutton)
@@ -182,9 +182,9 @@ public class PlayerManager : NetworkBehaviour
     }
     public void RemoveMissingBuildings()
     {
-        List<Building> buildingsToRemove = new List<Building>();
+        List<GameObject> buildingsToRemove = new List<GameObject>();
 
-        foreach (Building building in BuildingPlayer)
+        foreach (GameObject building in BuildingPlayer)
         {
             // Check if the building is missing (null)
             if (building == null)
@@ -194,7 +194,7 @@ public class PlayerManager : NetworkBehaviour
         }
 
         // Remove missing buildings
-        foreach (Building buildingToRemove in buildingsToRemove)
+        foreach (GameObject buildingToRemove in buildingsToRemove)
         {
             BuildingPlayer.Remove(buildingToRemove);
         }
@@ -204,13 +204,13 @@ public class PlayerManager : NetworkBehaviour
         Vector3Int positionInt = _gridBuildingSystem.gridLayout.LocalToCell(BuildingPlayerTemp.transform.position);
         BoundsInt areaTemp = BuildingPlayerTemp.area;
         areaTemp.position = positionInt;
-        BuildingPlayerTemp.Placed = true;
-      
+        
         Destroy(BuildingPlayerTemp.gameObject);
         
         InitializeWithBuilding(tempBuilding, BuildingPlayerTemp.transform.position);
         TakeAreaServerRpc(areaTemp);
         
+        BuildingPlayerTemp.Placed = true;
         BuildingPlayerTemp = null;
         //TakeAreaServerRpc(areaTemp);
     }
@@ -245,8 +245,9 @@ public class PlayerManager : NetworkBehaviour
             if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost )
             {
                 Vector3 Spawnpoint = new Vector3();
-                foreach (Building building in BuildingPlayer)
+                foreach (GameObject buildingT in BuildingPlayer)
                 {
+                    Building building = buildingT.GetComponent<Building>();
                     switch (prefabName)
                     {
                         case "Unit_Melee":
@@ -316,8 +317,9 @@ public class PlayerManager : NetworkBehaviour
 
     public void CheckBuildingIsDestroy()
     {
-        foreach (Building building in BuildingPlayer)
+        foreach (GameObject buildingt in BuildingPlayer)
         {
+            Building building = buildingt.GetComponent<Building>();
             if (building.BuildingTypeNow == Building.BuildingType.Destroy)
             {
                 ClearAreaServerRpc(building.area);
@@ -327,13 +329,6 @@ public class PlayerManager : NetworkBehaviour
     }
     public void InitializeWithBuilding(string prefabName, Vector3 position)
     {
-        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
-        if (buildingPrefab != null)
-        {
-            GameObject instantiatedObject = buildingPrefab;
-            BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
-            BuildingPlayer.Add(BuildingPlayerTemp);
-        }
         InitializeWithBuildingServerRpc(prefabName,position);
         
     }
@@ -344,31 +339,26 @@ public class PlayerManager : NetworkBehaviour
         if (buildingPrefab != null)
         {
             GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
-            BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
+          //  BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
             if (networkObject != null)
             {
                 networkObject.SpawnWithOwnership(OwnerClientId);
+                BuildingPlayer.Add(instantiatedObject);
             }
+            InitializeWithBuildingClientRpc(instantiatedObject);  
         }
-       // InitializeWithBuildingClientRpc(prefabName);
+       
     }
     [ClientRpc]
-    public void InitializeWithBuildingClientRpc(string prefabName)
+    public void InitializeWithBuildingClientRpc(NetworkObjectReference objectReference)
     {
         if (IsHost)
         {
             return;
         }
-      
-       GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
-
-        if (buildingPrefab != null)
-        {
-            Debug.Log("ADD");
-            Debug.Log(BuildingPlayerTemp);
-            BuildingPlayer.Add(BuildingPlayerTemp);
-        }
+        
+        BuildingPlayer.Add(objectReference);
         
     }
   
