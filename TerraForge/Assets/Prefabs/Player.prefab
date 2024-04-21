@@ -821,7 +821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3146982238
+  GlobalObjectIdHash: 9716842
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -862,6 +862,8 @@ MonoBehaviour:
   - {r: 0.19607845, g: 0.69803923, b: 0, a: 1}
   colorIndex: 0
   PlayerColorIndex:
+    m_InternalValue: 0
+  IsPlayerMax:
     m_InternalValue: 0
   buildbutton:
   - {fileID: 292789080268948320}

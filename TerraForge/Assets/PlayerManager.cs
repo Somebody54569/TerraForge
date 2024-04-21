@@ -90,6 +90,8 @@ public class PlayerManager : NetworkBehaviour
             Debug.Log(BuildingPlayerTemp);   
         }
         if (!IsOwner) { return; }
+
+        //CheckBuildingIsDestroy();
         PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
         
@@ -328,6 +330,17 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
+    public void CheckBuildingIsDestroy()
+    {
+        foreach (Building building in BuildingPlayer)
+        {
+            if (building.BuildingTypeNow == Building.BuildingType.Destroy)
+            {
+                ClearAreaServerRpc(building.area);
+                Destroy(building);
+            }
+        }
+    }
     public void InitializeWithBuilding(string prefabName, Vector3 position)
     {
         GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
@@ -394,7 +407,7 @@ public class PlayerManager : NetworkBehaviour
     private void ClearAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
         _gridBuildingSystem.ClearAreaWhenDestroy(area);
-        TakeAreaClientRpc(area);
+        ClearAreaClientRpc(area);
     }
     [ClientRpc]
     private void ClearAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
