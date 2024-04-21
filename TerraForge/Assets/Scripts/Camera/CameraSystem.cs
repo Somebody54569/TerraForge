@@ -15,6 +15,10 @@ public class CameraSystem : NetworkBehaviour
     [SerializeField] float moveSpeed;
     [SerializeField] private int ownerPriority = 15;
     
+    [Header("Boundary Limits")]
+    [SerializeField] private Vector2 topLeftBoundary;
+    [SerializeField] private Vector2 bottomRightBoundary;
+    
     [Header("Edge Scrolling Setting")]
     [SerializeField] private bool useEdgeScrolling;
     [SerializeField] private float edgeScrollingSpeed;
@@ -40,7 +44,7 @@ public class CameraSystem : NetworkBehaviour
             virtualCamera.Priority = ownerPriority;
         }
     }
-    
+
     void Update()
     {
         HandleCameraMovement();
@@ -56,6 +60,7 @@ public class CameraSystem : NetworkBehaviour
             HandleCameraDragPan();
         }
         
+        ClampCameraPosition();
     }
 
     private void HandleCameraMovement()
@@ -136,4 +141,11 @@ public class CameraSystem : NetworkBehaviour
         virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(virtualCamera.m_Lens.OrthographicSize, targetFOV, Time.deltaTime * zoomSpeed);
     }
     
+    private void ClampCameraPosition()
+    {
+        Vector3 clampedPosition = transform.position;
+        clampedPosition.x = Mathf.Clamp(clampedPosition.x, topLeftBoundary.x, bottomRightBoundary.x);
+        clampedPosition.y = Mathf.Clamp(clampedPosition.y, bottomRightBoundary.y, topLeftBoundary.y);
+        transform.position = clampedPosition;
+    }
 }
