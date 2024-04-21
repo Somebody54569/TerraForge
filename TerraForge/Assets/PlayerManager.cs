@@ -204,9 +204,13 @@ public class PlayerManager : NetworkBehaviour
         BoundsInt areaTemp = BuildingPlayerTemp.area;
         areaTemp.position = positionInt;
         BuildingPlayerTemp.Placed = true;
-        InitializeWithBuildingServerRpc(tempBuilding, BuildingPlayerTemp.transform.position);
-        TakeAreaServerRpc(areaTemp);
+      
         Destroy(BuildingPlayerTemp.gameObject);
+        
+        InitializeWithBuilding(tempBuilding, BuildingPlayerTemp.transform.position);
+        TakeAreaServerRpc(areaTemp);
+        
+        BuildingPlayerTemp = null;
         //TakeAreaServerRpc(areaTemp);
     }
     public void InitializeWithBuilding(string prefabName)
@@ -319,7 +323,18 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
-    
+    public void InitializeWithBuilding(string prefabName, Vector3 position)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+        if (buildingPrefab != null)
+        {
+            GameObject instantiatedObject = buildingPrefab;
+            BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
+            BuildingPlayer.Add(BuildingPlayerTemp);
+        }
+        InitializeWithBuildingServerRpc(prefabName,position);
+        
+    }
     [ServerRpc]
     public void InitializeWithBuildingServerRpc(string prefabName, Vector3 position)
     {
@@ -329,30 +344,21 @@ public class PlayerManager : NetworkBehaviour
             GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
             BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
-            
             if (networkObject != null)
             {
                 networkObject.SpawnWithOwnership(OwnerClientId);
             }
-
-            if (networkObject.OwnerClientId == this.OwnerClientId)
-            {
-                BuildingPlayer.Add(BuildingPlayerTemp);
-            }
-
         }
-        InitializeWithBuildingClientRpc(prefabName);
-        BuildingPlayerTemp = null;
-
+       // InitializeWithBuildingClientRpc(prefabName);
     }
     [ClientRpc]
     public void InitializeWithBuildingClientRpc(string prefabName)
     {
-        if (!IsServer)
+        if (IsHost)
         {
             return;
         }
-        
+      
        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
         if (buildingPrefab != null)

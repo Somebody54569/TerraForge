@@ -510,7 +510,7 @@ MonoBehaviour:
   Dmg: 80
   timeSinceLastAttack: 0
   AttackCooldown: 0.8
-  AttackRange: 5
+  AttackRange: 8
 --- !u!95 &1608800068891963863
 Animator:
   serializedVersion: 7
