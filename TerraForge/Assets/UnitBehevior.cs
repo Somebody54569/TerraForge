@@ -25,6 +25,7 @@ public class UnitBehevior : NetworkBehaviour
     private bool isSetToForceMove;
     private Vector2 moveDirection;
     public string TestTarget;
+    public Color unitColor;
     
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
@@ -44,6 +45,7 @@ public class UnitBehevior : NetworkBehaviour
        AttackRange = attributeUnit.AttackRange;
        DetectRange.radius = AttackRange + 1.5f;
        currentUnitState = UnitState.Idle;
+       GetComponent<SpriteRenderer>().color = unitColor;
     }
     
 

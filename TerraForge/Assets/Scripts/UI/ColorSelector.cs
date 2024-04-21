@@ -54,7 +54,7 @@ public class ColorSelector : MonoBehaviour
         HandleColorChanged();
     }
 
-    public void SavColor()
+    public void SaveColor()
     {
         PlayerPrefs.SetInt(PlayerColorKey, colorIndex);
     }

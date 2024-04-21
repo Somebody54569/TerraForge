@@ -31,6 +31,8 @@ public class AttributeUnit : NetworkBehaviour
 
     }
 
+    
+
     public void TakeDamage(int damageValue)
     {
         ModifyHealth(-damageValue);

@@ -350,7 +350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 99916574
+  GlobalObjectIdHash: 3602935568
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -413,6 +413,7 @@ MonoBehaviour:
   TargetToAttack: {fileID: 0}
   DetectRange: {fileID: 5672402485385086394}
   TestTarget: 
+  unitColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &5495693877913173386
 MonoBehaviour:
   m_ObjectHideFlags: 0
