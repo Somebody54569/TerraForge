@@ -80,7 +80,10 @@ public class PlayerManager : NetworkBehaviour
 
     private void Update()
     {
-
+        if (BuildingPlayerTemp != null)
+        {
+            Debug.Log(BuildingPlayerTemp);   
+        }
         if (!IsOwner) { return; }
         PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
@@ -111,7 +114,7 @@ public class PlayerManager : NetworkBehaviour
         {
             if (BuildingPlayerTemp.CanBePlaced())
             {
-               PlaceBuilding();
+                PlaceBuilding();
             }
         }
         else if (Input.GetKeyDown(KeyCode.Escape))
@@ -201,9 +204,9 @@ public class PlayerManager : NetworkBehaviour
         BoundsInt areaTemp = BuildingPlayerTemp.area;
         areaTemp.position = positionInt;
         BuildingPlayerTemp.Placed = true;
-        Destroy( BuildingPlayerTemp.gameObject);
         InitializeWithBuildingServerRpc(tempBuilding, BuildingPlayerTemp.transform.position);
         TakeAreaServerRpc(areaTemp);
+//        Destroy(BuildingPlayerTemp.gameObject);
         //TakeAreaServerRpc(areaTemp);
     }
     public void InitializeWithBuilding(string prefabName)
@@ -321,7 +324,6 @@ public class PlayerManager : NetworkBehaviour
     public void InitializeWithBuildingServerRpc(string prefabName, Vector3 position)
     {
         GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
-
         if (buildingPrefab != null)
         {
             GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
@@ -335,21 +337,22 @@ public class PlayerManager : NetworkBehaviour
             if (networkObject.OwnerClientId == this.OwnerClientId)
             {
                 BuildingPlayer.Add(BuildingPlayerTemp);
-            } 
-            BuildingPlayerTemp = null;
+            }
 
         }
         InitializeWithBuildingClientRpc(prefabName);
+        BuildingPlayerTemp = null;
+
     }
     [ClientRpc]
     public void InitializeWithBuildingClientRpc(string prefabName)
     {
-        if (IsServer)
+        if (!IsServer)
         {
             return;
         }
         
-        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+       GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
         if (buildingPrefab != null)
         {
@@ -357,6 +360,7 @@ public class PlayerManager : NetworkBehaviour
             Debug.Log(BuildingPlayerTemp);
             BuildingPlayer.Add(BuildingPlayerTemp);
         }
+        
     }
   
 
