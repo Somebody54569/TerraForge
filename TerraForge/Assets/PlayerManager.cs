@@ -26,6 +26,8 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private int colorIndex;
     public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
 
+    public List<GameObject> buildbutton;
+
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -39,6 +41,10 @@ public class PlayerManager : NetworkBehaviour
 
     private void Start()
     {
+        foreach (var VARIABLE in buildbutton)
+        {
+            VARIABLE.SetActive(false);
+        }
         _gridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
         if (IsOwner)
         {
@@ -76,7 +82,7 @@ public class PlayerManager : NetworkBehaviour
     {
 
         if (!IsOwner) { return; }
-        
+        PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
         
         if (!BuildingPlayerTemp)
@@ -115,8 +121,80 @@ public class PlayerManager : NetworkBehaviour
             BuildingPlayerTemp = null;
         }
     }
-    
-    
+
+    private void PlayerBuildingTree()
+    {
+        RemoveMissingBuildings();
+        foreach (var VARIABLE in buildbutton)
+        {
+            VARIABLE.SetActive(false);
+        }
+        foreach (Building building in BuildingPlayer)
+        { 
+            switch (building.BuildingTypeNow)
+            {
+                case Building.BuildingType.MotherBase:
+                    foreach (GameObject button in buildbutton)
+                    {
+                        if (button && button.name == "UnitBase")
+                        {
+                            button.SetActive(true);
+                        }
+                        if (button && button.name == "MeleeUnit")
+                        {
+                            button.SetActive(true); 
+                        }
+                    }
+                    break;
+                case Building.BuildingType.UnitBase:
+                    foreach (GameObject button in buildbutton)
+                    {
+                        if (button && button.name == "RangeUnit")
+                        {
+                            button.SetActive(true); 
+                        }
+                        if (button && button.name == "VehicleBase")
+                        {
+                            button.SetActive(true); 
+                        }
+                    }
+                    break;
+                case Building.BuildingType.VehicleBase:
+                    foreach (GameObject button in buildbutton)
+                    {
+                        if (button && button.name == "MechUnit")
+                        {
+                            button.SetActive(true); 
+                        }
+                    }
+                    break;
+                default:
+
+                    break;
+                
+            }
+        }
+        
+    }
+    public void RemoveMissingBuildings()
+    {
+        List<Building> buildingsToRemove = new List<Building>();
+
+        foreach (Building building in BuildingPlayer)
+        {
+            // Check if the building is missing (null)
+            if (building == null)
+            {
+                buildingsToRemove.Add(building);
+            }
+        }
+
+        // Remove missing buildings
+        foreach (Building buildingToRemove in buildingsToRemove)
+        {
+            BuildingPlayer.Remove(buildingToRemove);
+        }
+    }
     public void PlaceBuilding()
     {
         Vector3Int positionInt = _gridBuildingSystem.gridLayout.LocalToCell(BuildingPlayerTemp.transform.position);
