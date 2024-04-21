@@ -20,12 +20,8 @@ public class PlayerManager : NetworkBehaviour
     public int PlayerResource;
     public int PlayerResourceRiseRate;
     
-    //Color
-    [SerializeField] private SpriteRenderer playerSprites;
-    [SerializeField] private Color[] playerColor;
-    [SerializeField] private int colorIndex;
-    public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
     public NetworkVariable<bool> IsPlayerMax = new NetworkVariable<bool>();
+    public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
     
     public List<GameObject> buildbutton;
 
@@ -35,7 +31,6 @@ public class PlayerManager : NetworkBehaviour
         {
             UserData userData =
                 HostSingleton.Instance.GameManager.NetworkServer.GetUserDataByClientId(OwnerClientId);
-
             PlayerColorIndex.Value = userData.userColorIndex;
         }
     }
@@ -69,8 +64,7 @@ public class PlayerManager : NetworkBehaviour
                 VARIABLE.SetActive(false);
             }
         }
-        HandlePlayerColorChanged(0, PlayerColorIndex.Value);
-        PlayerColorIndex.OnValueChanged += HandlePlayerColorChanged;
+        
     }
 
     private void FixedUpdate()
@@ -235,16 +229,6 @@ public class PlayerManager : NetworkBehaviour
         }
     }
     
-    private void HandlePlayerColorChanged(int oldIndex, int newIndex)
-    {
-        colorIndex = newIndex;
-    }
-    
-    private void OnDestroy()
-    {
-        PlayerColorIndex.OnValueChanged -= HandlePlayerColorChanged;
-    }
-    
     [ServerRpc]
     public void InitializeWithUnitServerRpc(string prefabName)
     {
@@ -272,9 +256,7 @@ public class PlayerManager : NetworkBehaviour
                                     // Assign ownership to the client that requested the initialization
                                     networkObject.SpawnWithOwnership(OwnerClientId);
                                 }
-
-                                playerSprites = instantiatedObject.GetComponent<SpriteRenderer>();
-                                playerSprites.color = playerColor[colorIndex];
+                                
                             } 
                             break;
                         case "Unit_Range":
@@ -290,9 +272,7 @@ public class PlayerManager : NetworkBehaviour
                                     // Assign ownership to the client that requested the initialization
                                     networkObject.SpawnWithOwnership(OwnerClientId);
                                 }
-
-                                playerSprites = instantiatedObject.GetComponent<SpriteRenderer>();
-                                playerSprites.color = playerColor[colorIndex];
+                                
                             } 
                             break;
                         case "Unit_Vehicle":
@@ -308,9 +288,7 @@ public class PlayerManager : NetworkBehaviour
                                     // Assign ownership to the client that requested the initialization
                                     networkObject.SpawnWithOwnership(OwnerClientId);
                                 }
-
-                                playerSprites = instantiatedObject.GetComponent<SpriteRenderer>();
-                                playerSprites.color = playerColor[colorIndex];
+                                
                             } 
                             break;
                         default:

@@ -783,6 +783,7 @@ GameObject:
   - component: {fileID: 7597428339378889346}
   - component: {fileID: 4473747872467246097}
   - component: {fileID: 6711930142695951076}
+  - component: {fileID: -7207231736748675056}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -853,14 +854,8 @@ MonoBehaviour:
   tempBuilding: 
   PlayerResource: 0
   PlayerResourceRiseRate: 150
-  playerSprites: {fileID: 0}
-  playerColor:
-  - {r: 0.16470589, g: 0.50980395, b: 1, a: 1}
-  - {r: 1, g: 0.9490197, b: 0, a: 1}
-  - {r: 1, g: 0.16470589, b: 0.83921576, a: 1}
-  - {r: 1, g: 0.16470589, b: 0.20784315, a: 1}
-  - {r: 0.19607845, g: 0.69803923, b: 0, a: 1}
-  colorIndex: 0
+  IsPlayerMax:
+    m_InternalValue: 0
   PlayerColorIndex:
     m_InternalValue: 0
   buildbutton:
@@ -912,6 +907,30 @@ MonoBehaviour:
   FOVMax: 10
   FOVMin: 1
   targetFOV: 5
+--- !u!114 &-7207231736748675056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2050386084039214917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f989cd82190f8ba4a8fdef1a0b5c0158, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 7597428339378889346}
+  playerSprites:
+  - {fileID: 2702751085314792995, guid: da8a5718872c9ec439b81bb077185443, type: 3}
+  - {fileID: 2702751085314792995, guid: f62dc8ec84a25824aa2f1802035a47a2, type: 3}
+  - {fileID: 2702751085314792995, guid: 70b2856965ebb9943be766dd1a9359a6, type: 3}
+  playerColor:
+  - {r: 0.16470589, g: 0.50980395, b: 1, a: 1}
+  - {r: 1, g: 0.9490197, b: 0, a: 1}
+  - {r: 1, g: 0.16470589, b: 0.83921576, a: 1}
+  - {r: 1, g: 0.16470589, b: 0.20784315, a: 1}
+  - {r: 0.19607845, g: 0.69803923, b: 0, a: 1}
+  colorIndex: 0
 --- !u!1 &2314726435106343139
 GameObject:
   m_ObjectHideFlags: 0
