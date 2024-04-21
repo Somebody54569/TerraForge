@@ -413,6 +413,7 @@ MonoBehaviour:
   TargetToAttack: {fileID: 0}
   DetectRange: {fileID: 5672402485385086394}
   TestTarget: 
+  unitColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &5495693877913173386
 MonoBehaviour:
   m_ObjectHideFlags: 0

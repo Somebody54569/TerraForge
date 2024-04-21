@@ -7,8 +7,8 @@ public class PlayerColor : MonoBehaviour
 {
     [SerializeField] private PlayerManager player;
     [SerializeField] private SpriteRenderer[] playerSprites;
-    [SerializeField] private Color[] playerColor;
-    [SerializeField] private int colorIndex;
+    public Color[] playerColor;
+    public int colorIndex;
 
     private void Start()
     {

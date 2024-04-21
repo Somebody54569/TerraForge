@@ -249,6 +249,12 @@ public class PlayerManager : NetworkBehaviour
                                 Spawnpoint = building.SpawnPoint.position;
                                 GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
                                 instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
+                                PlayerColor playerColorComponent = GetComponent<PlayerColor>();
+                                if (playerColorComponent != null)
+                                {
+                                    instantiatedObject.GetComponent<UnitBehevior>().unitColor =
+                                        playerColorComponent.playerColor[playerColorComponent.colorIndex];
+                                }
                                 NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
                                 PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
                                 if (networkObject != null)
