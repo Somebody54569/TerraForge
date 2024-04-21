@@ -10,19 +10,24 @@ public class AttributeUnit : NetworkBehaviour
     public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>();
     [field: SerializeField] public int MaxHealth { get; private set; } = 100;
 
+    private Building _building;
     [SerializeField] public int Cost;
     [SerializeField] public int Dmg;
     public float timeSinceLastAttack = 0f;
     [SerializeField] public float AttackCooldown;
     public float AttackRange;
     private bool isDead;
-
+    
     public override void OnNetworkSpawn()
     {
         if (!IsServer) { return; }
 
         CurrentHealth.Value = MaxHealth;
-
+        if (this.GetComponent<Building>() != null)
+        {
+            _building = this.GetComponent<Building>();      
+        }
+      
 
     }
 
@@ -44,7 +49,14 @@ public class AttributeUnit : NetworkBehaviour
         CurrentHealth.Value = Mathf.Clamp(newHealth, 0, MaxHealth);
         if (CurrentHealth.Value == 0)
         {
-            Destroy(this.gameObject);
+            if (this.GetComponent<Building>() == null)
+            {
+                Destroy(this.gameObject);
+            }
+            if (this.GetComponent<Building>() != null)
+            {
+                _building.BuildingTypeNow = Building.BuildingType.Destroy;
+            }
         }
     }
 

@@ -336,7 +336,7 @@ public class PlayerManager : NetworkBehaviour
             {
                 BuildingPlayer.Add(BuildingPlayerTemp);
             }
-            BuildingPlayerTemp = null;
+          //  BuildingPlayerTemp = null;
 
         }
         InitializeWithBuildingClientRpc(prefabName);
@@ -344,17 +344,19 @@ public class PlayerManager : NetworkBehaviour
     [ClientRpc]
     public void InitializeWithBuildingClientRpc(string prefabName)
     {
-        if (IsOwner)
+        if (IsServer)
         {
             return;
         }
-        /*
+        
         GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
 
         if (buildingPrefab != null)
         {
+            Debug.Log("ADD");
+            Debug.Log(BuildingPlayerTemp);
             BuildingPlayer.Add(BuildingPlayerTemp);
-        }*/
+        }
     }
   
 
@@ -371,5 +373,18 @@ public class PlayerManager : NetworkBehaviour
         _gridBuildingSystem.TakeArea(area);
     }
     
+    
+    [ServerRpc]
+    private void ClearAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
+    {
+        _gridBuildingSystem.ClearAreaWhenDestroy(area);
+        TakeAreaClientRpc(area);
+    }
+    [ClientRpc]
+    private void ClearAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
+    {
+        //   if (IsOwner) { return; }
+        _gridBuildingSystem.ClearAreaWhenDestroy(area);
+    }
     
 }

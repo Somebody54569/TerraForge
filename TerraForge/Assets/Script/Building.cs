@@ -45,7 +45,8 @@ public class Building : NetworkBehaviour
     {
         MotherBase,
         UnitBase,
-        VehicleBase
+        VehicleBase,
+        Destroy
     }
 }
     
