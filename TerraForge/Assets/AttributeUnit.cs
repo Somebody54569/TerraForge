@@ -17,18 +17,20 @@ public class AttributeUnit : NetworkBehaviour
     [SerializeField] public float AttackCooldown;
     public float AttackRange;
     private bool isDead;
-    
+
+    private void Start()
+    {
+        if (this.GetComponent<Building>() != null)
+        {
+            _building = this.GetComponent<Building>();      
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         if (!IsServer) { return; }
 
         CurrentHealth.Value = MaxHealth;
-        if (this.GetComponent<Building>() != null)
-        {
-            _building = this.GetComponent<Building>();      
-        }
-      
-
     }
 
     

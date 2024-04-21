@@ -81,11 +81,12 @@ public class PlayerManager : NetworkBehaviour
     {
         if (BuildingPlayerTemp != null)
         {
-            Debug.Log(BuildingPlayerTemp);   
+          //  Debug.Log(BuildingPlayerTemp);   
         }
         if (!IsOwner) { return; }
 
-        //CheckBuildingIsDestroy();
+       // CheckBuildingIsDestroy();
+        CheckBuildingIsDestroy();
         PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
         
@@ -315,18 +316,7 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
-    public void CheckBuildingIsDestroy()
-    {
-        foreach (GameObject buildingt in BuildingPlayer)
-        {
-            Building building = buildingt.GetComponent<Building>();
-            if (building.BuildingTypeNow == Building.BuildingType.Destroy)
-            {
-                ClearAreaServerRpc(building.area);
-                Destroy(building);
-            }
-        }
-    }
+
     public void InitializeWithBuilding(string prefabName, Vector3 position)
     {
         InitializeWithBuildingServerRpc(prefabName,position);
@@ -376,7 +366,23 @@ public class PlayerManager : NetworkBehaviour
         _gridBuildingSystem.TakeArea(area);
     }
     
-    
+    public void CheckBuildingIsDestroy()
+    {
+        RemoveMissingBuildings();
+        foreach (GameObject buildingt in BuildingPlayer)
+        {
+            Building building = buildingt.GetComponent<Building>();
+            if (building.BuildingTypeNow == Building.BuildingType.Destroy)
+            {
+                Vector3 position = buildingt.transform.position;
+                Vector3Int positionInt = new Vector3Int((int)position.x - 1, (int)position.y, (int)position.z);
+                BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
+                areaTemp.position = positionInt;
+                ClearAreaServerRpc(areaTemp);
+                Destroy(buildingt);
+            }
+        }
+    }
     [ServerRpc]
     private void ClearAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
     {
