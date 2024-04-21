@@ -3120,6 +3120,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerlist: []
   startButton: {fileID: 2144508208}
+  waitingText: {fileID: 1574436872}
   waitingPanel: {fileID: 328547346}
 --- !u!114 &719307730
 MonoBehaviour:

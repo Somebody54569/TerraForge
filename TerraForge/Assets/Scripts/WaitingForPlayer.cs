@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ public class WaitingForPlayer : NetworkBehaviour
 {
     [SerializeField] private GameObject[] playerlist;
     [SerializeField] private Button startButton;
+    [SerializeField] private TMP_Text waitingText;
     [SerializeField] private GameObject waitingPanel;
 
     private NetworkVariable<bool> IsGameStarted = new NetworkVariable<bool>();
@@ -18,6 +20,7 @@ public class WaitingForPlayer : NetworkBehaviour
         if (!IsHost)
         {
             startButton.gameObject.SetActive(false);
+            waitingText.text = "Wait for Host To Start";
         }
 
         IsGameStarted.OnValueChanged += OnGameStartedChanged;
@@ -48,6 +51,10 @@ public class WaitingForPlayer : NetworkBehaviour
             }
             else
             {
+                if (IsHost)
+                {
+                    waitingText.text = "Press To start";
+                }
                 startButton.interactable = true;
             }
         }
