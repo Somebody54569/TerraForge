@@ -206,7 +206,7 @@ public class PlayerManager : NetworkBehaviour
         BuildingPlayerTemp.Placed = true;
         InitializeWithBuildingServerRpc(tempBuilding, BuildingPlayerTemp.transform.position);
         TakeAreaServerRpc(areaTemp);
-//        Destroy(BuildingPlayerTemp.gameObject);
+        Destroy(BuildingPlayerTemp.gameObject);
         //TakeAreaServerRpc(areaTemp);
     }
     public void InitializeWithBuilding(string prefabName)
@@ -329,6 +329,7 @@ public class PlayerManager : NetworkBehaviour
             GameObject instantiatedObject = Instantiate(buildingPrefab, position, Quaternion.identity);
             BuildingPlayerTemp = instantiatedObject.GetComponent<Building>();
             NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
+            
             if (networkObject != null)
             {
                 networkObject.SpawnWithOwnership(OwnerClientId);
