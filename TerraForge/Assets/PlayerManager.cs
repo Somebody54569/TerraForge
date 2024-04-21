@@ -25,7 +25,8 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private Color[] playerColor;
     [SerializeField] private int colorIndex;
     public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
-
+    public NetworkVariable<bool> IsPlayerMax = new NetworkVariable<bool>();
+    
     public List<GameObject> buildbutton;
 
     public override void OnNetworkSpawn()
@@ -74,8 +75,12 @@ public class PlayerManager : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        float resourceIncrease = PlayerResourceRiseRate * Time.deltaTime;
-        PlayerResource += (int)resourceIncrease;    
+        if (IsPlayerMax.Value == true)
+        {
+            float resourceIncrease = PlayerResourceRiseRate * Time.deltaTime; 
+            PlayerResource += (int)resourceIncrease;  
+        }
+          
     }
 
     private void Update()

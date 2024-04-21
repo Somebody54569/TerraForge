@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,6 +12,11 @@ public class LobbyItem : MonoBehaviour
 
     private LobbiesList lobbiesList;
     private Lobby lobby;
+
+    private void Start()
+    {
+        
+    }
 
     public void Initialise(LobbiesList lobbiesList, Lobby lobby)
     {

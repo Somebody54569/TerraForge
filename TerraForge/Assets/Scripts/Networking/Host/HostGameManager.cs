@@ -13,6 +13,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 public class HostGameManager : IDisposable
 {
@@ -22,7 +23,7 @@ public class HostGameManager : IDisposable
 
     public NetWorkServer NetworkServer { get; private set; }
     
-    private const int MaxConnection = 20;
+    private const int MaxConnection = 2;
     private const string GameSceneName = "Game";
 
     public async Task StartHostAsync()
