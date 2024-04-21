@@ -335,8 +335,8 @@ public class PlayerManager : NetworkBehaviour
             if (networkObject.OwnerClientId == this.OwnerClientId)
             {
                 BuildingPlayer.Add(BuildingPlayerTemp);
-            }
-          //  BuildingPlayerTemp = null;
+            } 
+            BuildingPlayerTemp = null;
 
         }
         InitializeWithBuildingClientRpc(prefabName);
