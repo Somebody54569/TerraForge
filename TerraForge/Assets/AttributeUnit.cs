@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BarthaSzabolcs.Tutorial_SpriteFlash;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class AttributeUnit : NetworkBehaviour
 {
@@ -53,8 +55,9 @@ public class AttributeUnit : NetworkBehaviour
 
     public void TakeDamage(int damageValue)
     {
-        int Result =  damageValue - Armor;
+        int Result =  damageValue - Random.Range(1,Armor);
         ModifyHealth(-Result);
+       // this.GetComponent<SimpleFlash>().Flash();
     }
 
     public void RestoreHealth(int healValue)

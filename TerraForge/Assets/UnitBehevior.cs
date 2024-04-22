@@ -224,7 +224,7 @@ public class UnitBehevior : NetworkBehaviour
     }
 
 
-    [ServerRpc(RequireOwnership = false)]
+ /*   [ServerRpc(RequireOwnership = false)]
     private void FlashServerRpc()
     {
         CurrentTarget.GetComponent<SimpleFlash>().Flash();
@@ -240,12 +240,12 @@ public class UnitBehevior : NetworkBehaviour
         CurrentTarget.GetComponent<SimpleFlash>().Flash();
     }
 
-  
+  */
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
         CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
-        FlashServerRpc();
+ //      FlashServerRpc();
       //  DamageToTargetClientRpc();
     }
     [ClientRpc]

@@ -329,7 +329,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 100
   m_Sprite: {fileID: -689520407193891599, guid: ea2013cae01de214e8f9277bda5e6a03, type: 3}
-  m_Color: {r: 0.16470589, g: 0.50980395, b: 1, a: 1}
+  m_Color: {r: 0.19607845, g: 0.69803923, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -516,7 +516,7 @@ MonoBehaviour:
   Dmg: 30
   timeSinceLastAttack: 0
   AttackCooldown: 0.8
-  AttackRange: 5
+  AttackRange: 7
   Armorup: {fileID: 6445481166155882922}
 --- !u!95 &1608800068891963863
 Animator:
@@ -939,7 +939,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6722665593111328170
 Transform:
   m_ObjectHideFlags: 0

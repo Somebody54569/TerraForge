@@ -105,26 +105,11 @@ public class Building : NetworkBehaviour
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
-        FlashServerRpc();
+      //  FlashServerRpc();
         CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
     }
     
-    [ServerRpc(RequireOwnership = false)]
-    private void FlashServerRpc()
-    {
-        CurrentTarget.GetComponent<SimpleFlash>().Flash();
-        FlashClientRpc();
-    }
-    [ClientRpc]
-    private void FlashClientRpc()
-    {
-        if (IsHost)
-        {
-            return;
-        }
-        CurrentTarget.GetComponent<SimpleFlash>().Flash();
-    }
-    
+
     public bool CanBePlaced()
     {
         Vector3Int positionInt = _GridBuildingSystem.gridLayout.LocalToCell(transform.position);

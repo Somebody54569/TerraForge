@@ -22,7 +22,7 @@ public class PlayerManager : NetworkBehaviour
     public int PlayerResource;
     public int PlayerResourceRiseRate;
 
-    public bool isSpawn;
+    public bool IsLose;
     public NetworkVariable<bool> IsPlayerMax = new NetworkVariable<bool>();
     public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
     
@@ -42,8 +42,7 @@ public class PlayerManager : NetworkBehaviour
     private void Start()
     {
      //   Vbuilding = new List<Building>();
-        isSpawn = false;
-        foreach (var VARIABLE in buildbutton)
+     foreach (var VARIABLE in buildbutton)
         {
             VARIABLE.SetActive(false);
         }
@@ -251,7 +250,6 @@ public class PlayerManager : NetworkBehaviour
                     }
                     break;
                 default:
-
                     break;
                 
             }
@@ -553,6 +551,10 @@ public class PlayerManager : NetworkBehaviour
                         Vector3Int positionInt = new Vector3Int((int)position.x - 1, (int)position.y, (int)position.z);
                         BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
                         areaTemp.position = positionInt;
+                        if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
+                        {
+                            IsLose = true;
+                        }
                         ClearAreaServerRpc(areaTemp,TileType.White);
                         _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.White);
                         Destroy(buildingt);

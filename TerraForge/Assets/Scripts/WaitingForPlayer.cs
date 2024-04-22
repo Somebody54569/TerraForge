@@ -63,6 +63,17 @@ public class WaitingForPlayer : NetworkBehaviour
                 startButton.interactable = true;
             }
         }
+
+        if (IsHost)
+        {
+            foreach (var player in playerlist)
+            {
+                if (player.GetComponent<PlayerManager>().IsLose)
+                {
+                    Destroy(player);
+                }
+            }
+        }
     }
 
     public void StartGame()
