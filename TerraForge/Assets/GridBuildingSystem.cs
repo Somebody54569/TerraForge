@@ -154,7 +154,7 @@ public class GridBuildingSystem : MonoBehaviour
     
     public void ClearAreaWhenDestroy(BoundsInt area)
     {
-        SetTilesBlock(area, TileType.Empty, mainTileMap);
+        SetTilesBlock(area, TileType.White, mainTileMap);
     }
 
 
