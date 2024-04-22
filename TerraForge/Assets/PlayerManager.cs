@@ -124,6 +124,7 @@ public class PlayerManager : NetworkBehaviour
         else if (Input.GetKeyDown(KeyCode.Escape))
         {
             _gridBuildingSystem.ClearArea();
+            PlayerResource += BuildingPlayerTemp.GetComponent<AttributeUnit>().Cost;
             Destroy(BuildingPlayerTemp.gameObject);
             BuildingPlayerTemp = null;
         }
@@ -260,6 +261,7 @@ public class PlayerManager : NetworkBehaviour
     [ServerRpc]
     public void InitializeWithUnitServerRpc(string prefabName)
     {
+        bool hasBase = false;
         GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
         
         if (buildingPrefab != null)
@@ -276,63 +278,103 @@ public class PlayerManager : NetworkBehaviour
                             if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
                             {
                                 Spawnpoint = building.SpawnPoint.position;
-                                GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
-                                instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
-                                PlayerColor playerColorComponent = GetComponent<PlayerColor>();
-                                if (playerColorComponent != null)
-                                {
-                                    instantiatedObject.GetComponent<UnitBehevior>().unitColor =
-                                        playerColorComponent.playerColor[playerColorComponent.colorIndex];
-                                }
-                                NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
-                                PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
-                                if (networkObject != null)
-                                {
-                                    // Assign ownership to the client that requested the initialization
-                                    networkObject.SpawnWithOwnership(OwnerClientId);
-                                }
-                                
+                                hasBase = true;
                             } 
                             break;
                         case "Unit_Range":
                             if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
                             {
                                 Spawnpoint = building.SpawnPoint.position;
-                                GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
-                                instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
-                                NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
-                                PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
-                                if (networkObject != null)
-                                {
-                                    // Assign ownership to the client that requested the initialization
-                                    networkObject.SpawnWithOwnership(OwnerClientId);
-                                }
-                                
+                                hasBase = true;
                             } 
                             break;
                         case "Unit_Vehicle":
                             if (building.BuildingTypeNow == Building.BuildingType.VehicleBase)
                             {
                                 Spawnpoint = building.SpawnPoint.position;
-                                GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
-                                instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
-                                NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
-                                PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
-                                if (networkObject != null)
-                                {
-                                    // Assign ownership to the client that requested the initialization
-                                    networkObject.SpawnWithOwnership(OwnerClientId);
-                                }
-                                
+                                hasBase = true;
                             } 
                             break;
                         default:
+                            hasBase = false;
                             return;
                             break;
                     }
-                   
+                    
                 }
-
+                if (hasBase)
+                {
+                    GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
+                    instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
+                    PlayerColor playerColorComponent = GetComponent<PlayerColor>();
+                    if (playerColorComponent != null)
+                    {
+                        instantiatedObject.GetComponent<UnitBehevior>().unitColor = playerColorComponent.playerColor[playerColorComponent.colorIndex];
+                    }
+                    NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
+                    PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+                    if (networkObject != null)
+                    {
+                        // Assign ownership to the client that requested the initialization
+                        networkObject.SpawnWithOwnership(OwnerClientId);
+                    }       
+                }
+                InitializeWithUnitClientRpc(prefabName);
+            }
+        }
+    }
+    [ClientRpc]
+     private void InitializeWithUnitClientRpc(string prefabName)
+    {
+        if (IsHost)
+        {
+            return;
+        }
+        bool hasBase = false;
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+        
+        if (buildingPrefab != null)
+        {
+            if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost )
+            {
+                Vector3 Spawnpoint = new Vector3();
+                foreach (GameObject buildingT in BuildingPlayer)
+                {
+                    Building building = buildingT.GetComponent<Building>();
+                    switch (prefabName)
+                    {
+                        case "Unit_Melee":
+                            if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
+                            {
+                                Spawnpoint = building.SpawnPoint.position;
+                                hasBase = true;
+                            } 
+                            break;
+                        case "Unit_Range":
+                            if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
+                            {
+                                Spawnpoint = building.SpawnPoint.position;
+                                hasBase = true;
+                            } 
+                            break;
+                        case "Unit_Vehicle":
+                            if (building.BuildingTypeNow == Building.BuildingType.VehicleBase)
+                            {
+                                Spawnpoint = building.SpawnPoint.position;
+                                hasBase = true;
+                            } 
+                            break;
+                        default:
+                            hasBase = false;
+                            return;
+                            break;
+                    }
+                    
+                }
+                if (hasBase)
+                {
+                    PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+                }
             }
         }
     }
