@@ -206,10 +206,16 @@ public class PlayerManager : NetworkBehaviour
         BoundsInt areaTemp = BuildingPlayerTemp.area;
         areaTemp.position = positionInt;
         
+        Vector3Int positionBInt = _gridBuildingSystem.gridLayout.LocalToCell(BuildingPlayerTemp.transform.position);
+        BoundsInt areaBTemp = BuildingPlayerTemp.areaBorder;
+        areaBTemp.position = positionBInt;
+        
         Destroy(BuildingPlayerTemp.gameObject);
         
         InitializeWithBuilding(tempBuilding, BuildingPlayerTemp.transform.position);
+        _gridBuildingSystem.TakeBArea(areaBTemp);
         TakeAreaServerRpc(areaTemp);
+        
         
         BuildingPlayerTemp.Placed = true;
         BuildingPlayerTemp = null;

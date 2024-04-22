@@ -152,6 +152,13 @@ public class GridBuildingSystem : MonoBehaviour
         SetTilesBlock(area, TileType.Green, mainTileMap);
     }
     
+    public void TakeBArea(BoundsInt area)
+    {
+       // SetTilesBlock(area, TileType.Empty, TempTileMap);
+        SetTilesBlock(area, TileType.White, mainTileMap);
+    }
+
+    
     public void ClearAreaWhenDestroy(BoundsInt area)
     {
         SetTilesBlock(area, TileType.White, mainTileMap);
