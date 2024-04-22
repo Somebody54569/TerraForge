@@ -14,9 +14,14 @@ public class WaitingForPlayer : NetworkBehaviour
 
     private NetworkVariable<bool> IsGameStarted = new NetworkVariable<bool>();
 
+    public GridBuildingSystem _gridBuildingSystem;
+
+    private Queue<Transform> SpawnPoint;
     // Start is called before the first frame update
     void Start()
     {
+        SpawnPoint = new Queue<Transform>();
+        _gridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
         if (!IsHost)
         {
             startButton.gameObject.SetActive(false);
@@ -45,7 +50,7 @@ public class WaitingForPlayer : NetworkBehaviour
         if (!IsGameStarted.Value)
         {
             playerlist = GameObject.FindGameObjectsWithTag("Player");
-            if (playerlist.Length != 1)
+            if (playerlist.Length != 2)
             {
                 startButton.interactable = false;
             }
@@ -67,5 +72,43 @@ public class WaitingForPlayer : NetworkBehaviour
         {
             player.GetComponent<PlayerManager>().IsPlayerMax.Value = true;
         }
+    
+        setSpawnPointServerRpc();
     }
+
+    private void setQspawnPoint()
+    {
+        foreach (var spawn in _gridBuildingSystem.SpawnPoint)
+        {
+            SpawnPoint.Enqueue(spawn.transform);
+        }
+    }
+    
+    [ServerRpc]
+    private void setSpawnPointServerRpc()
+    {
+            setQspawnPoint();
+            foreach (var player in playerlist)
+            {
+                player.transform.position = SpawnPoint.Dequeue().transform.position;
+            }
+            setSpawnPointClientRpc();
+    }
+    
+    [ClientRpc]
+    private void setSpawnPointClientRpc()
+    {
+        if (IsHost)
+        {
+            return;
+        }
+        setQspawnPoint();
+        foreach (var player in playerlist)
+        {
+            player.transform.position = SpawnPoint.Dequeue().transform.position;
+        }
+
+    }
+    
+
 }

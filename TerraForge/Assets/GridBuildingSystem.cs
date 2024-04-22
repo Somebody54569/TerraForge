@@ -8,6 +8,7 @@ public class GridBuildingSystem : MonoBehaviour
 //    public static GridBuildingSystem current;
     private static GridBuildingSystem instance;
 
+    public List<GameObject> SpawnPoint;
     private void Awake()
     {
         // If an instance already exists, destroy this one

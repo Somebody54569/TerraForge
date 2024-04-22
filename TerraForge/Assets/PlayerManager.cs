@@ -19,7 +19,8 @@ public class PlayerManager : NetworkBehaviour
     public string tempBuilding;
     public int PlayerResource;
     public int PlayerResourceRiseRate;
-    
+
+    public bool isSpawn;
     public NetworkVariable<bool> IsPlayerMax = new NetworkVariable<bool>();
     public NetworkVariable<int> PlayerColorIndex = new NetworkVariable<int>();
     
@@ -37,6 +38,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void Start()
     {
+        isSpawn = false;
         foreach (var VARIABLE in buildbutton)
         {
             VARIABLE.SetActive(false);
