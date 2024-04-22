@@ -3,19 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-public class DetectAndDmg : MonoBehaviour
+
+public class BuildingCanAttack : MonoBehaviour
 {
     private ulong ownerClientId;
-    [SerializeField] private UnitBehevior Unit;
+    [SerializeField] private Building building;
 
     private void Start()
     {
-        this.ownerClientId = Unit.OwnerClientId;
+        this.ownerClientId = building.OwnerClientId;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-
         if(col.attachedRigidbody == null) {  return; }
 
         if(col.attachedRigidbody.TryGetComponent<NetworkObject>(out NetworkObject netObj))
@@ -28,18 +28,21 @@ public class DetectAndDmg : MonoBehaviour
 
         if (col.GetComponent<AttributeUnit>()!= null)
         {
-            Unit.SetTarget(col.gameObject);
+            building.SetTarget(col.gameObject);
+
         }
     }
 
     private void FixedUpdate()
     {
-        foreach (var target in Unit.TargetToAttack)
+        foreach (var target in building.TargetToAttack)
         {
-            if (Vector2.Distance(Unit.transform.position, target.transform.position) < Unit.AttackRange)
+            if (Vector2.Distance( transform.position, target.transform.position) < building.AttackRange)
             {
-                Unit.CurrentTarget = target;
+                building.CurrentTarget = target;
+
             }
         }
+
     }
 }

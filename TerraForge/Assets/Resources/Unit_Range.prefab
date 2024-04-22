@@ -409,12 +409,14 @@ MonoBehaviour:
   Animator: {fileID: 1608800068891963863}
   NetworkAnimator: {fileID: 1113493473911909496}
   SelectIcon: {fileID: 3293385541176301035}
+  AttackRange: 0
   attributeUnit: {fileID: 2229249735808330275}
-  TargetToAttack: {fileID: 0}
+  TargetToAttack:
+  - {fileID: 0}
+  CurrentTarget: {fileID: 0}
   DetectRange: {fileID: 5672402485385086394}
   TestTarget: 
   unitColor: {r: 1, g: 1, b: 1, a: 1}
-  ColorRenderer: {fileID: 0}
 --- !u!114 &5495693877913173386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -577,6 +579,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flashMaterial: {fileID: 2100000, guid: 9fb6a408d04bf934ab81328eb056115d, type: 2}
   duration: 0.001
+  spriteRenderer: {fileID: 2702751085314792995}
 --- !u!1 &3293385541176301035
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,7 +596,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &35995299309408779
 Transform:
   m_ObjectHideFlags: 0

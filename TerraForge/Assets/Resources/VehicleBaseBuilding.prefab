@@ -263,6 +263,7 @@ GameObject:
   - component: {fileID: 9185168642043785805}
   - component: {fileID: 9197861630452048975}
   - component: {fileID: 1521623460788214955}
+  - component: {fileID: 3649805347674469979}
   m_Layer: 0
   m_Name: VehicleBaseBuilding
   m_TagString: Base
@@ -366,6 +367,10 @@ MonoBehaviour:
     m_Position: {x: 0, y: 0, z: 0}
     m_Size: {x: 10, y: 9, z: 1}
   SpriteRenderer: {fileID: 2552937397003086988}
+  unitColor: {r: 0, g: 0, b: 0, a: 0}
+  TargetToAttack: []
+  CurrentTarget: {fileID: 0}
+  DetectRange: {fileID: 0}
 --- !u!114 &334156224869374267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,6 +478,21 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &3649805347674469979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106652066769970415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa732a5f2a4f1440973b0f05400f856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashMaterial: {fileID: 0}
+  duration: 0.001
+  spriteRenderer: {fileID: 2552937397003086988}
 --- !u!1 &2609863547624576076
 GameObject:
   m_ObjectHideFlags: 0

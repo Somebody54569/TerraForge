@@ -18,14 +18,16 @@ public class UnitBehevior : NetworkBehaviour
     private state currentState;
     private UnitState currentUnitState;
     [SerializeField] private GameObject SelectIcon;
-    private float AttackRange;
+    public float AttackRange;
     public AttributeUnit attributeUnit;
-    public GameObject TargetToAttack;
+    public List<GameObject> TargetToAttack;
+    public GameObject CurrentTarget;
     [SerializeField] private CircleCollider2D DetectRange;
     private bool isSetToForceMove;
     private Vector2 moveDirection;
     public string TestTarget;
     public Color unitColor;
+    
     
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
@@ -39,6 +41,7 @@ public class UnitBehevior : NetworkBehaviour
 
     private void Start()
     {
+        TargetToAttack = new List<GameObject>(); 
         TestTarget = "NO";
        ChangeState(state.UnSelect);
        attributeUnit = this.GetComponent<AttributeUnit>();
@@ -61,7 +64,7 @@ public class UnitBehevior : NetworkBehaviour
             {
                 if (currentState == state.Select)
                 {
-                    SetTarget(null);
+                    //SetTarget(null);
                     targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                     isSetToForceMove = true;
                     currentUnitState = UnitState.Walk;
@@ -72,6 +75,7 @@ public class UnitBehevior : NetworkBehaviour
 
     private void FixedUpdate()
     {
+        RemoveMissingBuildings();
        if (!IsOwner) { return; }
 
        if (TargetToAttack != null)
@@ -152,31 +156,53 @@ public class UnitBehevior : NetworkBehaviour
     
     private void MoveToTargetAndAttack()
     {
-        if (TargetToAttack == null)
+        if (CurrentTarget == null)
         {
             return;
         }
-        if (TargetToAttack != null)
+        if (CurrentTarget != null)
         {
-            targetPosition = TargetToAttack.transform.position;
-         
-            if (Vector2.Distance(rb.position, targetPosition) > AttackRange)
+            foreach (var target in TargetToAttack)
             {
-                MoveTo();
-                
+                if (Vector2.Distance(rb.position, target.transform.position) < AttackRange)
+                {
+                    FlipXWalkServerRpc(false);
+                    rb.velocity = Vector2.zero;
+               //     CurrentTarget = target;
+                    Attack();
+
+                }
             }
-            else
-            {
-                FlipXWalkServerRpc(false);
-                rb.velocity = Vector2.zero;
-                Attack();
-            }
+           
 
         }
     }
     public void SetTarget(GameObject newTarget)
     {
-        TargetToAttack = newTarget;
+        TargetToAttack.Add(newTarget);
+    }
+    public void RemoveTarget(GameObject newTarget)
+    {
+        TargetToAttack.Remove(newTarget);
+    }
+    public void RemoveMissingBuildings()
+    {
+        List<GameObject> buildingsToRemove = new List<GameObject>();
+
+        foreach (GameObject building in TargetToAttack)
+        {
+            // Check if the building is missing (null)
+            if (building == null)
+            {
+                buildingsToRemove.Add(building);
+            }
+        }
+
+        // Remove missing buildings
+        foreach (GameObject buildingToRemove in buildingsToRemove)
+        {
+            TargetToAttack.Remove(buildingToRemove);
+        }
     }
  
     private void Attack()
@@ -191,8 +217,8 @@ public class UnitBehevior : NetworkBehaviour
         
         attributeUnit.timeSinceLastAttack += Time.deltaTime;
         if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
-        {
-           // TargetToAttack.GetComponent<SimpleFlash>().Flash();
+        { 
+            CurrentTarget.GetComponent<SimpleFlash>().Flash();
            DamageToTargetServerRpc();
             attributeUnit.timeSinceLastAttack = 0f;
         }
@@ -206,16 +232,17 @@ public class UnitBehevior : NetworkBehaviour
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
-        TargetToAttack.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
+        CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
       //  DamageToTargetClientRpc();
     }
     [ClientRpc]
     private void DamageToTargetClientRpc()
     {
-        if (TargetToAttack.GetComponent<AttributeUnit>().IsOwner)
+        if (IsHost)
         {
-            TargetToAttack.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
+            return;
         }
+        CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
     }
 
     #region Flip

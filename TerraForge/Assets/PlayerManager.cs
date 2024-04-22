@@ -89,12 +89,12 @@ public class PlayerManager : NetworkBehaviour
         {
           //  Debug.Log(BuildingPlayerTemp);   
         }
+        RemoveMissingUnit();
+        CheckBuildingIsDestroy();
         if (!IsOwner) { return; }
 
        // CheckBuildingIsDestroy();
-       RemoveMissingUnit();
-       CheckBuildingIsDestroy();
-        PlayerBuildingTree();
+       PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
         
         if (!BuildingPlayerTemp)
@@ -162,13 +162,18 @@ public class PlayerManager : NetworkBehaviour
         );
 // Set the position of the bounding box centered around BuildingPlayerTemp
         areaBTemp.position = positionBInt - centerOffset;
-        
+        StartBuild.Placed = true;
+
+        if (!IsOwner)
+        {
+            return;
+        }
         _gridBuildingSystem.TakeBArea(areaBTemp);
         
         TakeAreaServerRpc(areaTemp);
         
         
-        StartBuild.Placed = true;
+   
         //TakeAreaServerRpc(areaTemp);
     }
     private void PlayerBuildingTree()
@@ -190,6 +195,10 @@ public class PlayerManager : NetworkBehaviour
                             button.SetActive(true);
                         }
                         if (button && button.name == "MeleeUnit")
+                        {
+                            button.SetActive(true); 
+                        }
+                        if (button && button.name == "PillBox")
                         {
                             button.SetActive(true); 
                         }
@@ -378,21 +387,24 @@ public class PlayerManager : NetworkBehaviour
                         // Assign ownership to the client that requested the initialization
                         networkObject.SpawnWithOwnership(OwnerClientId);
                     }       
-                    InitializeWithUnitClientRpc(instantiatedObject);
+                    InitializeWithUnitClientRpc(instantiatedObject,prefabName);
                 }
                
             }
         }
     }
     [ClientRpc]
-     private void InitializeWithUnitClientRpc(NetworkObjectReference unit)
+     private void InitializeWithUnitClientRpc(NetworkObjectReference unit , string prefabName)
     {
         if (IsHost)
         {
             return;
         }
         UnitPlayer.Add(unit);
-
+        
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+        PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+        
         foreach (var VARIABLE in UnitPlayer)
         {
             PlayerColor playerColorComponent = GetComponent<PlayerColor>();

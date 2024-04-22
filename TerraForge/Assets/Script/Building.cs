@@ -15,6 +15,14 @@ public class Building : NetworkBehaviour
 
     public SpriteRenderer SpriteRenderer;
     public Color unitColor;
+    private AttributeUnit attributeUnit;
+ 
+    public List<GameObject> TargetToAttack;
+    public GameObject CurrentTarget;
+
+
+    public float AttackRange;
+    [SerializeField] private CircleCollider2D DetectRange;
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
     
@@ -25,14 +33,78 @@ public class Building : NetworkBehaviour
             minimapIconRenderer.color = ownerColorOnMap;
         }
     }*/
-    
-    private void Start()
+    public void SetTarget(GameObject newTarget)
     {
-        _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
-        SpriteRenderer.color = unitColor;
-        Placed = false;
+        TargetToAttack.Add(newTarget);
+    }
+    public void RemoveTarget(GameObject newTarget)
+    {
+        TargetToAttack.Remove(newTarget);
+    }
+    
+    public void RemoveMissingBuildings()
+    {
+        List<GameObject> buildingsToRemove = new List<GameObject>();
+
+        foreach (GameObject building in TargetToAttack)
+        {
+            // Check if the building is missing (null)
+            if (building == null)
+            {
+                buildingsToRemove.Add(building);
+            }
+        }
+
+        // Remove missing buildings
+        foreach (GameObject buildingToRemove in buildingsToRemove)
+        {
+            TargetToAttack.Remove(buildingToRemove);
+        }
     }
 
+    private void Start()
+    {
+        TargetToAttack = new List<GameObject>();
+        _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
+        attributeUnit = this.GetComponent<AttributeUnit>();
+        SpriteRenderer.color = unitColor;
+        Placed = false;
+        AttackRange = attributeUnit.AttackRange;
+        DetectRange.radius = AttackRange + 1.5f;
+    }
+
+    private void Attack()
+    {
+        AttackRange = attributeUnit.AttackRange;
+        DetectRange.radius = AttackRange;
+        
+        attributeUnit.timeSinceLastAttack += Time.deltaTime;
+        if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
+        {
+            // TargetToAttack.GetComponent<SimpleFlash>().Flash();
+            DamageToTargetServerRpc();
+            attributeUnit.timeSinceLastAttack = 0f;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        RemoveMissingBuildings();
+        if (!IsOwner) { return; }
+      
+        if (CurrentTarget != null)
+        {
+           Attack();
+        }
+    }
+
+
+    [ServerRpc]
+    private void DamageToTargetServerRpc()
+    {
+        CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
+    }
+    
     public bool CanBePlaced()
     {
         Vector3Int positionInt = _GridBuildingSystem.gridLayout.LocalToCell(transform.position);
@@ -53,6 +125,7 @@ public class Building : NetworkBehaviour
         MotherBase,
         UnitBase,
         VehicleBase,
+        PillBox,
         Destroy
     }
 }

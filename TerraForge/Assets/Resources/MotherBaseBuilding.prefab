@@ -177,6 +177,7 @@ GameObject:
   - component: {fileID: 9185168642043785805}
   - component: {fileID: 9197861630452048975}
   - component: {fileID: 1521623460788214955}
+  - component: {fileID: 8479113211035474067}
   m_Layer: 0
   m_Name: MotherBaseBuilding
   m_TagString: Base
@@ -197,6 +198,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1321738645814697002}
   - {fileID: 2431390020891540365}
   - {fileID: 4227098962169928338}
   - {fileID: 5136026961948633251}
@@ -283,6 +285,11 @@ MonoBehaviour:
     m_Position: {x: 0, y: 0, z: 0}
     m_Size: {x: 13, y: 12, z: 1}
   SpriteRenderer: {fileID: 2552937397003086988}
+  unitColor: {r: 0, g: 0, b: 0, a: 0}
+  TargetToAttack:
+  - {fileID: 0}
+  CurrentTarget: {fileID: 0}
+  DetectRange: {fileID: 5581464870928747698}
 --- !u!114 &334156224869374267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -299,9 +306,9 @@ MonoBehaviour:
     m_InternalValue: 0
   <MaxHealth>k__BackingField: 2500
   Cost: 0
-  Dmg: 50
+  Dmg: 25
   timeSinceLastAttack: 0
-  AttackCooldown: 1
+  AttackCooldown: 0.5
   AttackRange: 10
 --- !u!114 &9185168642043785805
 MonoBehaviour:
@@ -390,6 +397,103 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &8479113211035474067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1106652066769970415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fa732a5f2a4f1440973b0f05400f856, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashMaterial: {fileID: 2100000, guid: 9fb6a408d04bf934ab81328eb056115d, type: 2}
+  duration: 0.001
+  spriteRenderer: {fileID: 2552937397003086988}
+--- !u!1 &1383432667363837797
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1321738645814697002}
+  - component: {fileID: 2415054966799240008}
+  - component: {fileID: 5581464870928747698}
+  m_Layer: 0
+  m_Name: DetechRange
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1321738645814697002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383432667363837797}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.51, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8513206293535155681}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2415054966799240008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383432667363837797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 436cd0832b269c1428858117abe5e2d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  building: {fileID: 5266497457824955550}
+--- !u!58 &5581464870928747698
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1383432667363837797}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
 --- !u!1 &2609863547624576076
 GameObject:
   m_ObjectHideFlags: 0
