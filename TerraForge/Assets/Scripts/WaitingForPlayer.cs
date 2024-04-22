@@ -91,6 +91,7 @@ public class WaitingForPlayer : NetworkBehaviour
             foreach (var player in playerlist)
             {
                 player.transform.position = SpawnPoint.Dequeue().transform.position;
+                player.GetComponent<PlayerManager>().PlayerSpawnWithBase(player.transform.position);
             }
             setSpawnPointClientRpc();
     }
@@ -106,6 +107,7 @@ public class WaitingForPlayer : NetworkBehaviour
         foreach (var player in playerlist)
         {
             player.transform.position = SpawnPoint.Dequeue().transform.position;
+            player.GetComponent<PlayerManager>().PlayerSpawnWithBase(player.transform.position);
         }
 
     }

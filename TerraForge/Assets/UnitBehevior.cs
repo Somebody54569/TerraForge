@@ -136,7 +136,7 @@ public class UnitBehevior : NetworkBehaviour
                 FlipXWalkServerRpc(true); 
                 moveDirection = (targetPosition - (Vector2) rb.position).normalized;
                 rb.velocity = moveDirection * movementSpeed;
-                FlipSprite();
+                Flip();
 
             }
             else
@@ -199,13 +199,9 @@ public class UnitBehevior : NetworkBehaviour
     }
 
 
-    private void FlipSprite()
-    {
-        if (moveDirection.x > 0) // Moving right
-            SpriteRenderer.flipX = false;
-        else if (moveDirection.x < 0) // Moving left
-            SpriteRenderer.flipX = true;
-    }
+
+    
+
   
     [ServerRpc]
     private void DamageToTargetServerRpc()
@@ -222,6 +218,36 @@ public class UnitBehevior : NetworkBehaviour
         }
     }
 
+    #region Flip
+    private void Flip()
+    {
+        // Walk to the right
+        if (moveDirection.x > 0)
+        {
+            SpriteRenderer.flipX = false; // No flipping
+            FlipServerRpc(SpriteRenderer.flipX);
+        }
+        // Walk to the left
+        else if (moveDirection.x < 0)
+        {
+            SpriteRenderer.flipX = true; // Flip x-axis
+            FlipServerRpc(SpriteRenderer.flipX);
+        }
+    }
+
+    [ServerRpc]
+    private void FlipServerRpc(bool flipX)
+    {
+        FlipClientRpc(flipX);
+    }
+
+    [ClientRpc]
+    private void FlipClientRpc(bool flipX)
+    {
+        SpriteRenderer.flipX = flipX;
+    }
+    #endregion
+    
 }
 
 public enum state

@@ -822,7 +822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 9716842
+  GlobalObjectIdHash: 3146982238
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -851,9 +851,11 @@ MonoBehaviour:
   ResourceText: {fileID: 9187203990356055092}
   SelectUnit: []
   BuildingPlayer: []
+  UnitPlayer: []
   tempBuilding: 
   PlayerResource: 0
-  PlayerResourceRiseRate: 150
+  PlayerResourceRiseRate: 100
+  isSpawn: 0
   IsPlayerMax:
     m_InternalValue: 0
   PlayerColorIndex:
@@ -904,9 +906,9 @@ MonoBehaviour:
   useDragPan: 1
   dragPanSpeed: 10
   zoomSpeed: 10
-  FOVMax: 10
+  FOVMax: 13
   FOVMin: 1
-  targetFOV: 5
+  targetFOV: 7
 --- !u!114 &-7207231736748675056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1275,8 +1277,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 590.6, y: 242.2}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 589.76794, y: 242.2}
+  m_SizeDelta: {x: 101.0818, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4282325090027259397
 CanvasRenderer:
@@ -1545,7 +1547,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6011005791265572538
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3284,8 +3286,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 594, y: 204}
-  m_SizeDelta: {x: 97.0872, y: 103.2469}
+  m_AnchoredPosition: {x: 589.5612, y: 201.46346}
+  m_SizeDelta: {x: 98.084, y: 97.6612}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5448791460424775320
 CanvasRenderer:

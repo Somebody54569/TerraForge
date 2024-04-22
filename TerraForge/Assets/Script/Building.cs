@@ -12,6 +12,9 @@ public class Building : NetworkBehaviour
     public BuildingType BuildingTypeNow;
     public Transform SpawnPoint;
     public BoundsInt areaBorder;
+
+    public SpriteRenderer SpriteRenderer;
+    public Color unitColor;
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
     
@@ -26,6 +29,7 @@ public class Building : NetworkBehaviour
     private void Start()
     {
         _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
+        SpriteRenderer.color = unitColor;
         Placed = false;
     }
 

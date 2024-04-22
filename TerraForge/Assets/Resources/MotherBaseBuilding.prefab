@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 118800718
+  GlobalObjectIdHash: 673856595
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -274,7 +274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Placed: 0
   area:
-    m_Position: {x: 4, y: -1, z: 0}
+    m_Position: {x: 4, y: 0, z: 0}
     m_Size: {x: 4, y: 3, z: 1}
   _GridBuildingSystem: {fileID: 0}
   BuildingTypeNow: 0
@@ -282,6 +282,7 @@ MonoBehaviour:
   areaBorder:
     m_Position: {x: 0, y: 0, z: 0}
     m_Size: {x: 13, y: 12, z: 1}
+  SpriteRenderer: {fileID: 2552937397003086988}
 --- !u!114 &334156224869374267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -898,7 +899,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 50
   m_Sprite: {fileID: -1790145400590651902, guid: cb7d51cc9f6603b4592bc98f40c7b71e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -984,7 +985,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 50
   m_Sprite: {fileID: -1790145400590651902, guid: cb7d51cc9f6603b4592bc98f40c7b71e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1101,7 +1102,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 50
   m_Sprite: {fileID: -1790145400590651902, guid: cb7d51cc9f6603b4592bc98f40c7b71e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1187,7 +1188,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 50
   m_Sprite: {fileID: -1790145400590651902, guid: cb7d51cc9f6603b4592bc98f40c7b71e, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

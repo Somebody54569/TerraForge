@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
@@ -10,10 +11,17 @@ public class HealthDisplay : NetworkBehaviour
     [SerializeField] private AttributeUnit  health;
     [SerializeField] private Image healthBarImage;
 
+    private void Start()
+    {
+        if (IsOwner)
+        {
+            healthBarImage.color = Color.green;
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         if(!IsClient) { return; }
-
         health.CurrentHealth.OnValueChanged += HandleHealthChanged;
         HandleHealthChanged(0,health.CurrentHealth.Value);
     }

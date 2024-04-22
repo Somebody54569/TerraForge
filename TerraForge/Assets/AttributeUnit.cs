@@ -17,6 +17,8 @@ public class AttributeUnit : NetworkBehaviour
     [SerializeField] public float AttackCooldown;
     public float AttackRange;
     private bool isDead;
+    
+ //   [SerializeField] public float CDtoBuild;
 
     private void Start()
     {

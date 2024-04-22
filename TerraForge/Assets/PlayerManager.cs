@@ -16,6 +16,8 @@ public class PlayerManager : NetworkBehaviour
     [SerializeField] private TMP_Text ResourceText;
     public List<UnitBehevior> SelectUnit;
     public List<GameObject> BuildingPlayer;
+    
+    public List<GameObject> UnitPlayer;
     public string tempBuilding;
     public int PlayerResource;
     public int PlayerResourceRiseRate;
@@ -66,7 +68,9 @@ public class PlayerManager : NetworkBehaviour
                 VARIABLE.SetActive(false);
             }
         }
-        
+
+       
+
     }
 
     private void FixedUpdate()
@@ -88,7 +92,8 @@ public class PlayerManager : NetworkBehaviour
         if (!IsOwner) { return; }
 
        // CheckBuildingIsDestroy();
-        CheckBuildingIsDestroy();
+       RemoveMissingUnit();
+       CheckBuildingIsDestroy();
         PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
         
@@ -130,6 +135,42 @@ public class PlayerManager : NetworkBehaviour
         }
     }
 
+    public void PlayerSpawnWithBase(Vector3 position)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>("MotherBaseBuilding");
+        Building StartBuild = buildingPrefab.GetComponent<Building>();
+        tempBuilding = "MotherBaseBuilding";
+        
+        Vector3Int positionInt = _gridBuildingSystem.gridLayout.LocalToCell(position);
+        BoundsInt areaTemp = StartBuild.area;
+        areaTemp.position = positionInt;
+        
+    
+
+// Pass the adjusted area to the method
+    
+        InitializeWithBuilding(tempBuilding, position);
+        
+        Vector3Int positionBInt = _gridBuildingSystem.gridLayout.LocalToCell(position);
+        BoundsInt areaBTemp = StartBuild.areaBorder;
+
+// Calculate the offset to center the bounding box
+        Vector3Int centerOffset = new Vector3Int(
+            Mathf.FloorToInt((areaBTemp.size.x - 2) / 2),
+            Mathf.FloorToInt((areaBTemp.size.y - 1) / 2),
+            Mathf.FloorToInt((areaBTemp.size.z - 1) / 2)
+        );
+// Set the position of the bounding box centered around BuildingPlayerTemp
+        areaBTemp.position = positionBInt - centerOffset;
+        
+        _gridBuildingSystem.TakeBArea(areaBTemp);
+        
+        TakeAreaServerRpc(areaTemp);
+        
+        
+        StartBuild.Placed = true;
+        //TakeAreaServerRpc(areaTemp);
+    }
     private void PlayerBuildingTree()
     {
         RemoveMissingBuildings();
@@ -203,6 +244,25 @@ public class PlayerManager : NetworkBehaviour
             BuildingPlayer.Remove(buildingToRemove);
         }
     }
+    public void RemoveMissingUnit()
+    {
+        List<GameObject> buildingsToRemove = new List<GameObject>();
+
+        foreach (GameObject building in UnitPlayer)
+        {
+            // Check if the building is missing (null)
+            if (building == null)
+            {
+                buildingsToRemove.Add(building);
+            }
+        }
+
+        // Remove missing buildings
+        foreach (GameObject buildingToRemove in buildingsToRemove)
+        {
+            UnitPlayer.Remove(buildingToRemove);
+        }
+    }
     public void PlaceBuilding()
     {
         Vector3Int positionInt = _gridBuildingSystem.gridLayout.LocalToCell(BuildingPlayerTemp.transform.position);
@@ -251,7 +311,7 @@ public class PlayerManager : NetworkBehaviour
                 if (BuildingPlayerTemp != null)
                 {
                     tempBuilding = prefabName;
-
+                    BuildingPlayerTemp.GetComponent<BoxCollider2D>().enabled = false;
                     _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
                 }
             }
@@ -318,65 +378,30 @@ public class PlayerManager : NetworkBehaviour
                         // Assign ownership to the client that requested the initialization
                         networkObject.SpawnWithOwnership(OwnerClientId);
                     }       
+                    InitializeWithUnitClientRpc(instantiatedObject);
                 }
-                InitializeWithUnitClientRpc(prefabName);
+               
             }
         }
     }
     [ClientRpc]
-     private void InitializeWithUnitClientRpc(string prefabName)
+     private void InitializeWithUnitClientRpc(NetworkObjectReference unit)
     {
         if (IsHost)
         {
             return;
         }
-        bool hasBase = false;
-        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
-        
-        if (buildingPrefab != null)
+        UnitPlayer.Add(unit);
+
+        foreach (var VARIABLE in UnitPlayer)
         {
-            if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost )
+            PlayerColor playerColorComponent = GetComponent<PlayerColor>();
+            if (playerColorComponent != null)
             {
-                Vector3 Spawnpoint = new Vector3();
-                foreach (GameObject buildingT in BuildingPlayer)
-                {
-                    Building building = buildingT.GetComponent<Building>();
-                    switch (prefabName)
-                    {
-                        case "Unit_Melee":
-                            if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
-                            {
-                                Spawnpoint = building.SpawnPoint.position;
-                                hasBase = true;
-                            } 
-                            break;
-                        case "Unit_Range":
-                            if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
-                            {
-                                Spawnpoint = building.SpawnPoint.position;
-                                hasBase = true;
-                            } 
-                            break;
-                        case "Unit_Vehicle":
-                            if (building.BuildingTypeNow == Building.BuildingType.VehicleBase)
-                            {
-                                Spawnpoint = building.SpawnPoint.position;
-                                hasBase = true;
-                            } 
-                            break;
-                        default:
-                            hasBase = false;
-                            return;
-                            break;
-                    }
-                    
-                }
-                if (hasBase)
-                {
-                    PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
-                }
+                VARIABLE.GetComponent<UnitBehevior>().unitColor = playerColorComponent.playerColor[playerColorComponent.colorIndex];
             }
         }
+  
     }
 
 
@@ -399,6 +424,11 @@ public class PlayerManager : NetworkBehaviour
                 networkObject.SpawnWithOwnership(OwnerClientId);
                 BuildingPlayer.Add(instantiatedObject);
             }
+            PlayerColor playerColorComponent = GetComponent<PlayerColor>();
+            if (playerColorComponent != null)
+            {
+                instantiatedObject.GetComponent<Building>().unitColor = playerColorComponent.playerColor[playerColorComponent.colorIndex];
+            }
             InitializeWithBuildingClientRpc(instantiatedObject);  
         }
        
@@ -412,6 +442,14 @@ public class PlayerManager : NetworkBehaviour
         }
         
         BuildingPlayer.Add(objectReference);
+        foreach (var VARIABLE in BuildingPlayer)
+        {
+            PlayerColor playerColorComponent = GetComponent<PlayerColor>();
+            if (playerColorComponent != null)
+            {
+                VARIABLE.GetComponent<Building>().unitColor = playerColorComponent.playerColor[playerColorComponent.colorIndex];
+            }
+        }
         
     }
   

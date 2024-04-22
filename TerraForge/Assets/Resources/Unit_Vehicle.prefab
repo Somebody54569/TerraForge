@@ -27,15 +27,15 @@ RectTransform:
   m_GameObject: {fileID: 1174742359576934673}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.56777555, y: 0.81438, z: 0.81438}
+  m_LocalScale: {x: 1.2046529, y: 0.30328757, z: 1.4550527}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7845818626950042244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.69999695}
-  m_SizeDelta: {x: 1.2452, y: 0.1003}
+  m_AnchoredPosition: {x: -0.040008545, y: 0.91999817}
+  m_SizeDelta: {x: 1, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6261998544229141187
 CanvasRenderer:
@@ -414,6 +414,7 @@ MonoBehaviour:
   DetectRange: {fileID: 5672402485385086394}
   TestTarget: 
   unitColor: {r: 1, g: 1, b: 1, a: 1}
+  ColorRenderer: {fileID: 0}
 --- !u!114 &5495693877913173386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,7 +508,7 @@ MonoBehaviour:
   CurrentHealth:
     m_InternalValue: 0
   <MaxHealth>k__BackingField: 500
-  Cost: 300
+  Cost: 500
   Dmg: 80
   timeSinceLastAttack: 0
   AttackCooldown: 0.8
@@ -602,8 +603,8 @@ Transform:
   m_GameObject: {fileID: 3293385541176301035}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.031, y: -0.594, z: 0}
-  m_LocalScale: {x: 1.7114211, y: 0.66343373, z: 1.9210023}
+  m_LocalPosition: {x: 0.02, y: -0.1, z: 0}
+  m_LocalScale: {x: 2.8503702, y: 2.9971719, z: 2.3058937}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5230426250910761711}
@@ -857,15 +858,15 @@ RectTransform:
   m_GameObject: {fileID: 8841573511405821985}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.65124494, y: 1.9678924, z: 1.1326}
+  m_LocalScale: {x: 1.3817505, y: 0.7328732, z: 2.0236163}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7845818626950042244}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0.69999695}
-  m_SizeDelta: {x: 1.2452, y: 0.1003}
+  m_AnchoredPosition: {x: -0.040008545, y: 0.91999817}
+  m_SizeDelta: {x: 1, y: 0.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2485974994034872467
 CanvasRenderer:

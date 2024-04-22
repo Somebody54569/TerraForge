@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1552829017
+  GlobalObjectIdHash: 451020526
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -365,6 +365,7 @@ MonoBehaviour:
   areaBorder:
     m_Position: {x: 0, y: 0, z: 0}
     m_Size: {x: 8, y: 7, z: 1}
+  SpriteRenderer: {fileID: 2552937397003086988}
 --- !u!114 &334156224869374267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,7 +381,7 @@ MonoBehaviour:
   CurrentHealth:
     m_InternalValue: 0
   <MaxHealth>k__BackingField: 1000
-  Cost: 0
+  Cost: 250
   Dmg: 0
   timeSinceLastAttack: 0
   AttackCooldown: 0
