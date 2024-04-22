@@ -522,7 +522,7 @@ Animator:
   m_GameObject: {fileID: 2310937430555032964}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1b3662f96dbfe3f419458281fbfb373e, type: 2}
+  m_Controller: {fileID: 9100000, guid: b015f52b54fdb3f42b8aa462d1035bfd, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -549,18 +549,18 @@ MonoBehaviour:
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
     Layer: 0
-    OriginatingState: 1028786650
-    DestinationState: 1910189445
+    OriginatingState: 1159936326
+    DestinationState: -1042709092
     TransitionDuration: 0
     TriggerNameHash: 1080829965
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
-    OriginatingState: 556492994
-    DestinationState: 1910189445
+    OriginatingState: 345437702
+    DestinationState: -1042709092
     TransitionDuration: 0
     TriggerNameHash: 1080829965
-    TransitionIndex: 0
+    TransitionIndex: 1
   m_Animator: {fileID: 1608800068891963863}
 --- !u!114 &-5339448985913885238
 MonoBehaviour:
