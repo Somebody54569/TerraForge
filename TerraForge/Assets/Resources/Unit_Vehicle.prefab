@@ -328,7 +328,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 100
   m_Sprite: {fileID: 5546671543968653177, guid: ea2013cae01de214e8f9277bda5e6a03, type: 3}
-  m_Color: {r: 0.19607845, g: 0.69803923, b: 0, a: 1}
+  m_Color: {r: 0.16470589, g: 0.50980395, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -522,7 +522,7 @@ Animator:
   m_GameObject: {fileID: 2310937430555032964}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1b3662f96dbfe3f419458281fbfb373e, type: 2}
+  m_Controller: {fileID: 9100000, guid: b015f52b54fdb3f42b8aa462d1035bfd, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -549,18 +549,18 @@ MonoBehaviour:
   TransitionStateInfoList:
   - IsCrossFadeExit: 0
     Layer: 0
-    OriginatingState: 1028786650
-    DestinationState: 1910189445
+    OriginatingState: 1159936326
+    DestinationState: -1042709092
     TransitionDuration: 0
     TriggerNameHash: 1080829965
     TransitionIndex: 1
   - IsCrossFadeExit: 0
     Layer: 0
-    OriginatingState: 556492994
-    DestinationState: 1910189445
+    OriginatingState: 345437702
+    DestinationState: -1042709092
     TransitionDuration: 0
     TriggerNameHash: 1080829965
-    TransitionIndex: 0
+    TransitionIndex: 1
   m_Animator: {fileID: 1608800068891963863}
 --- !u!114 &-5339448985913885238
 MonoBehaviour:
