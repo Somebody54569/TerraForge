@@ -47,6 +47,7 @@ public class GridBuildingSystem : MonoBehaviour
         tileBases.Add(TileType.White, Resources.Load<TileBase>(tilePath + "White"));
         tileBases.Add(TileType.Green, Resources.Load<TileBase>(tilePath + "Green"));
         tileBases.Add(TileType.Red, Resources.Load<TileBase>(tilePath + "Red"));
+        tileBases.Add(TileType.Blue, Resources.Load<TileBase>(tilePath + "Blue"));
         /*// Check if the key already exists before adding
         if (!tileBases.ContainsKey(TileType.Empty))
         {
@@ -105,7 +106,7 @@ public class GridBuildingSystem : MonoBehaviour
     
  
 
-    public void FollowBuilding(Building temp)
+    public void FollowBuilding(Building temp , TileType type)
     {
         ClearArea();
         temp.area.position = gridLayout.WorldToCell(temp.gameObject.transform.position);
@@ -117,7 +118,7 @@ public class GridBuildingSystem : MonoBehaviour
         TileBase[] tileArray = new TileBase[size];
         for (int i = 0; i < baseArray.Length; i++)
         {
-            if (baseArray[i] == tileBases[TileType.White])
+            if (baseArray[i] == tileBases[type])
             {
                 tileArray[i] = tileBases[TileType.Green];
             }
@@ -131,12 +132,12 @@ public class GridBuildingSystem : MonoBehaviour
         prevArea = buildingArea;
     }
 
-    public bool CanTakeArea(BoundsInt area)
+    public bool CanTakeArea(BoundsInt area ,TileType type)
     {
         TileBase[] baseArray = GetTilesBlock(area, mainTileMap);
         foreach (var b in baseArray)
         {
-            if (b != tileBases[TileType.White])
+            if (b != tileBases[type])
             {
                 return false;
             }
@@ -180,9 +181,9 @@ public class GridBuildingSystem : MonoBehaviour
 
 
     
-    public void ClearAreaWhenDestroy(BoundsInt area)
+    public void ClearAreaWhenDestroy(BoundsInt area ,TileType tileType)
     {
-        SetTilesBlock(area, TileType.White, mainTileMap);
+        SetTilesBlock(area, tileType, mainTileMap);
     }
 
 
@@ -231,4 +232,5 @@ public enum TileType
     White,
     Green,
     Red,
+    Blue
 }

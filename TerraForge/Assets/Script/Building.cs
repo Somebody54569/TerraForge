@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using BarthaSzabolcs.Tutorial_SpriteFlash;
 using UnityEngine;
 using Unity.Netcode;
 
@@ -10,6 +11,7 @@ public class Building : NetworkBehaviour
     public BoundsInt area;
     public GridBuildingSystem _GridBuildingSystem;
     public BuildingType BuildingTypeNow;
+    public stateBuilding stateBuildingTypeNow;
     public Transform SpawnPoint;
     public BoundsInt areaBorder;
 
@@ -68,6 +70,7 @@ public class Building : NetworkBehaviour
         _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
         attributeUnit = this.GetComponent<AttributeUnit>();
         SpriteRenderer.color = unitColor;
+        stateBuildingTypeNow = stateBuilding.Work;
         Placed = false;
         AttackRange = attributeUnit.AttackRange;
         DetectRange.radius = AttackRange + 1.5f;
@@ -102,19 +105,49 @@ public class Building : NetworkBehaviour
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
+        FlashServerRpc();
         CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
+    }
+    
+    [ServerRpc(RequireOwnership = false)]
+    private void FlashServerRpc()
+    {
+        CurrentTarget.GetComponent<SimpleFlash>().Flash();
+        FlashClientRpc();
+    }
+    [ClientRpc]
+    private void FlashClientRpc()
+    {
+        if (IsHost)
+        {
+            return;
+        }
+        CurrentTarget.GetComponent<SimpleFlash>().Flash();
     }
     
     public bool CanBePlaced()
     {
         Vector3Int positionInt = _GridBuildingSystem.gridLayout.LocalToCell(transform.position);
         BoundsInt areaTemp = area;
-        areaTemp.position = positionInt;
-        if (_GridBuildingSystem.CanTakeArea(areaTemp))
+        switch (BuildingTypeNow)
         {
-            return true;
+            case BuildingType.VoridiumDrill:
+                areaTemp.position = positionInt;
+                if (_GridBuildingSystem.CanTakeArea(areaTemp,TileType.Blue))
+                {
+                    return true;
+                }
+                break;
+            default:
+              
+                areaTemp.position = positionInt;
+                if (_GridBuildingSystem.CanTakeArea(areaTemp,TileType.White))
+                {
+                    return true;
+                }
+                break;
         }
-
+        
         return false;
     }
     
@@ -126,6 +159,11 @@ public class Building : NetworkBehaviour
         UnitBase,
         VehicleBase,
         PillBox,
+        VoridiumDrill,
+    }
+    public enum stateBuilding
+    {
+        Work,
         Destroy
     }
 }

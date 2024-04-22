@@ -28,6 +28,7 @@ public class PlayerManager : NetworkBehaviour
     
     public List<GameObject> buildbutton;
 
+  //  private List<Building> Vbuilding;
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -40,6 +41,7 @@ public class PlayerManager : NetworkBehaviour
 
     private void Start()
     {
+     //   Vbuilding = new List<Building>();
         isSpawn = false;
         foreach (var VARIABLE in buildbutton)
         {
@@ -77,8 +79,9 @@ public class PlayerManager : NetworkBehaviour
     {
         if (IsPlayerMax.Value == true)
         {
-            float resourceIncrease = PlayerResourceRiseRate * Time.deltaTime; 
+            float resourceIncrease = PlayerResourceRiseRate  *Time.deltaTime; 
             PlayerResource += (int)resourceIncrease;  
+           // Debug.Log(Vbuilding.Count);
         }
           
     }
@@ -115,7 +118,15 @@ public class PlayerManager : NetworkBehaviour
                 BuildingPlayerTemp.transform.localPosition =
                     _gridBuildingSystem.gridLayout.CellToLocalInterpolated(cellPos + new Vector3(0.5f, 0.5f, 0f));
                 _gridBuildingSystem.prevPos = cellPos;
-                _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
+                switch (BuildingPlayerTemp.BuildingTypeNow)
+                {
+                    case Building.BuildingType.VoridiumDrill:
+                        _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp,TileType.Blue);
+                        break;
+                    default:
+                        _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp,TileType.White);
+                        break;
+                }
             }
         }
 
@@ -176,15 +187,24 @@ public class PlayerManager : NetworkBehaviour
    
         //TakeAreaServerRpc(areaTemp);
     }
+
+    private void calCoin()
+    {
+        PlayerResourceRiseRate = 100;
+        foreach (GameObject building in BuildingPlayer)
+        {
+            if (building.GetComponent<Building>().BuildingTypeNow == Building.BuildingType.VoridiumDrill)
+            {
+                PlayerResourceRiseRate += 50;
+            }
+        }
+    }
+    
     private void PlayerBuildingTree()
     {
         RemoveMissingBuildings();
-        foreach (var VARIABLE in buildbutton)
-        {
-            VARIABLE.SetActive(false);
-        }
         foreach (GameObject building in BuildingPlayer)
-        { 
+        {
             switch (building.GetComponent<Building>().BuildingTypeNow)
             {
                 case Building.BuildingType.MotherBase:
@@ -198,7 +218,7 @@ public class PlayerManager : NetworkBehaviour
                         {
                             button.SetActive(true); 
                         }
-                        if (button && button.name == "PillBox")
+                        if (button && button.name == "VoridiumDrill")
                         {
                             button.SetActive(true); 
                         }
@@ -207,6 +227,10 @@ public class PlayerManager : NetworkBehaviour
                 case Building.BuildingType.UnitBase:
                     foreach (GameObject button in buildbutton)
                     {
+                        if (button && button.name == "PillBox")
+                        {
+                            button.SetActive(true); 
+                        }
                         if (button && button.name == "RangeUnit")
                         {
                             button.SetActive(true); 
@@ -304,6 +328,7 @@ public class PlayerManager : NetworkBehaviour
         
         BuildingPlayerTemp.Placed = true;
         BuildingPlayerTemp = null;
+        calCoin();
         //TakeAreaServerRpc(areaTemp);
     }
     public void InitializeWithBuilding(string prefabName)
@@ -321,12 +346,33 @@ public class PlayerManager : NetworkBehaviour
                 {
                     tempBuilding = prefabName;
                     BuildingPlayerTemp.GetComponent<BoxCollider2D>().enabled = false;
-                    _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp);
+                    switch (BuildingPlayerTemp.BuildingTypeNow)
+                    {
+                        case Building.BuildingType.VoridiumDrill:
+                            _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp,TileType.Blue);
+                            break;
+                        default:
+                            _gridBuildingSystem.FollowBuilding(BuildingPlayerTemp,TileType.White);
+                            break;
+                    }
+                    
                 }
             }
         }
     }
     
+    public void InitializeWithUnit(string prefabName)
+    {
+        
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+        if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost)
+        {
+            PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+            InitializeWithUnitServerRpc(prefabName);
+        }
+    }
+
+
     [ServerRpc]
     public void InitializeWithUnitServerRpc(string prefabName)
     {
@@ -335,62 +381,64 @@ public class PlayerManager : NetworkBehaviour
         
         if (buildingPrefab != null)
         {
-            if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost )
+            Vector3 Spawnpoint = new Vector3();
+            foreach (GameObject buildingT in BuildingPlayer)
             {
-                Vector3 Spawnpoint = new Vector3();
-                foreach (GameObject buildingT in BuildingPlayer)
+                Building building = buildingT.GetComponent<Building>();
+                switch (prefabName)
                 {
-                    Building building = buildingT.GetComponent<Building>();
-                    switch (prefabName)
-                    {
-                        case "Unit_Melee":
-                            if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
-                            {
-                                Spawnpoint = building.SpawnPoint.position;
-                                hasBase = true;
-                            } 
-                            break;
-                        case "Unit_Range":
-                            if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
-                            {
-                                Spawnpoint = building.SpawnPoint.position;
-                                hasBase = true;
-                            } 
-                            break;
-                        case "Unit_Vehicle":
-                            if (building.BuildingTypeNow == Building.BuildingType.VehicleBase)
-                            {
-                                Spawnpoint = building.SpawnPoint.position;
-                                hasBase = true;
-                            } 
-                            break;
-                        default:
-                            hasBase = false;
-                            return;
-                            break;
-                    }
-                    
+                    case "Unit_Melee":
+                        if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
+                        {
+                            Spawnpoint = building.SpawnPoint.position;
+                            hasBase = true;
+                        }
+
+                        break;
+                    case "Unit_Range":
+                        if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
+                        {
+                            Spawnpoint = building.SpawnPoint.position;
+                            hasBase = true;
+                        }
+
+                        break;
+                    case "Unit_Vehicle":
+                        if (building.BuildingTypeNow == Building.BuildingType.VehicleBase)
+                        {
+                            Spawnpoint = building.SpawnPoint.position;
+                            hasBase = true;
+                        }
+
+                        break;
+                    default:
+                        hasBase = false;
+                        return;
+                        break;
                 }
-                if (hasBase)
-                {
-                    GameObject instantiatedObject = Instantiate(buildingPrefab,Spawnpoint, Quaternion.identity);
-                    instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
-                    PlayerColor playerColorComponent = GetComponent<PlayerColor>();
-                    if (playerColorComponent != null)
-                    {
-                        instantiatedObject.GetComponent<UnitBehevior>().unitColor = playerColorComponent.playerColor[playerColorComponent.colorIndex];
-                    }
-                    NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
-                    PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
-                    if (networkObject != null)
-                    {
-                        // Assign ownership to the client that requested the initialization
-                        networkObject.SpawnWithOwnership(OwnerClientId);
-                    }       
-                    InitializeWithUnitClientRpc(instantiatedObject,prefabName);
-                }
-               
             }
+            if (hasBase)
+            {
+                GameObject instantiatedObject = Instantiate(buildingPrefab, Spawnpoint, Quaternion.identity);
+                instantiatedObject.GetComponent<UnitBehevior>().targetPosition = Spawnpoint;
+                PlayerColor playerColorComponent = GetComponent<PlayerColor>();
+                if (playerColorComponent != null)
+                {
+                    instantiatedObject.GetComponent<UnitBehevior>().unitColor =
+                        playerColorComponent.playerColor[playerColorComponent.colorIndex];
+                }
+
+                NetworkObject networkObject = instantiatedObject.GetComponent<NetworkObject>();
+              //  PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+                if (networkObject != null)
+                {
+                    // Assign ownership to the client that requested the initialization
+                    networkObject.SpawnWithOwnership(OwnerClientId);
+                }
+
+                InitializeWithUnitClientRpc(instantiatedObject, prefabName);
+            }
+
         }
     }
     [ClientRpc]
@@ -401,9 +449,6 @@ public class PlayerManager : NetworkBehaviour
             return;
         }
         UnitPlayer.Add(unit);
-        
-        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
-        PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
         
         foreach (var VARIABLE in UnitPlayer)
         {
@@ -482,31 +527,54 @@ public class PlayerManager : NetworkBehaviour
     public void CheckBuildingIsDestroy()
     {
         RemoveMissingBuildings();
+        
         foreach (GameObject buildingt in BuildingPlayer)
         {
             Building building = buildingt.GetComponent<Building>();
-            if (building.BuildingTypeNow == Building.BuildingType.Destroy)
+            switch (building.BuildingTypeNow)
             {
-                Vector3 position = buildingt.transform.position;
-                Vector3Int positionInt = new Vector3Int((int)position.x - 1, (int)position.y, (int)position.z);
-                BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
-                areaTemp.position = positionInt;
-                ClearAreaServerRpc(areaTemp);
-                Destroy(buildingt);
+                case Building.BuildingType.VoridiumDrill:
+                    if (building.stateBuildingTypeNow == Building.stateBuilding.Destroy)
+                    {
+                        Vector3 position = buildingt.transform.position;
+                        Vector3Int positionInt = new Vector3Int((int)position.x, (int)position.y -1, (int)position.z);
+                        BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
+                        areaTemp.position = positionInt;
+                        ClearAreaServerRpc(areaTemp,TileType.Blue);
+                        _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.Blue);
+                      //  Vbuilding.Remove(building);
+                        Destroy(buildingt);
+                    }
+                    break;
+                default:
+                    if (building.stateBuildingTypeNow == Building.stateBuilding.Destroy)
+                    {
+                        Vector3 position = buildingt.transform.position;
+                        Vector3Int positionInt = new Vector3Int((int)position.x - 1, (int)position.y, (int)position.z);
+                        BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
+                        areaTemp.position = positionInt;
+                        ClearAreaServerRpc(areaTemp,TileType.White);
+                        _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.White);
+                        Destroy(buildingt);
+                    }
+                    break;
             }
+          
         }
+
+        calCoin();
     }
     [ServerRpc]
-    private void ClearAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
+    private void ClearAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area,TileType type)
     {
-        _gridBuildingSystem.ClearAreaWhenDestroy(area);
-        ClearAreaClientRpc(area);
+        _gridBuildingSystem.ClearAreaWhenDestroy(area , type);
+        ClearAreaClientRpc(area,type);
     }
     [ClientRpc]
-    private void ClearAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area)
+    private void ClearAreaClientRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area ,TileType type)
     {
-        //   if (IsOwner) { return; }
-        _gridBuildingSystem.ClearAreaWhenDestroy(area);
+
+        _gridBuildingSystem.ClearAreaWhenDestroy(area ,type);
     }
     
 }

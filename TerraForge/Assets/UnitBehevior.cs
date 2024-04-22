@@ -217,22 +217,35 @@ public class UnitBehevior : NetworkBehaviour
         
         attributeUnit.timeSinceLastAttack += Time.deltaTime;
         if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
-        { 
-            CurrentTarget.GetComponent<SimpleFlash>().Flash();
-           DamageToTargetServerRpc();
+        {
+            DamageToTargetServerRpc();
             attributeUnit.timeSinceLastAttack = 0f;
         }
     }
 
 
-
-    
+    [ServerRpc(RequireOwnership = false)]
+    private void FlashServerRpc()
+    {
+        CurrentTarget.GetComponent<SimpleFlash>().Flash();
+        FlashClientRpc();
+    }
+    [ClientRpc]
+    private void FlashClientRpc()
+    {
+        if (IsHost)
+        {
+            return;
+        }
+        CurrentTarget.GetComponent<SimpleFlash>().Flash();
+    }
 
   
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
         CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
+        FlashServerRpc();
       //  DamageToTargetClientRpc();
     }
     [ClientRpc]
