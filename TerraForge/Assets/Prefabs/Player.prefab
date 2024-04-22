@@ -858,8 +858,6 @@ MonoBehaviour:
     m_InternalValue: 0
   PlayerColorIndex:
     m_InternalValue: 0
-  IsPlayerMax:
-    m_InternalValue: 0
   buildbutton:
   - {fileID: 292789080268948320}
   - {fileID: 3347457272222880031}
@@ -898,8 +896,8 @@ MonoBehaviour:
   virtualCamera: {fileID: 7002943533689542481}
   moveSpeed: 20
   ownerPriority: 15
-  topLeftBoundary: {x: -26, y: 49}
-  bottomRightBoundary: {x: 28, y: -32}
+  topLeftBoundary: {x: -17, y: 41}
+  bottomRightBoundary: {x: 15, y: -22}
   useEdgeScrolling: 0
   edgeScrollingSpeed: 10
   edgeScrollSize: 10

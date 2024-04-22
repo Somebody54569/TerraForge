@@ -45,7 +45,7 @@ public class WaitingForPlayer : NetworkBehaviour
         if (!IsGameStarted.Value)
         {
             playerlist = GameObject.FindGameObjectsWithTag("Player");
-            if (playerlist.Length != 2)
+            if (playerlist.Length != 1)
             {
                 startButton.interactable = false;
             }

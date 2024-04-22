@@ -206,14 +206,27 @@ public class PlayerManager : NetworkBehaviour
         BoundsInt areaTemp = BuildingPlayerTemp.area;
         areaTemp.position = positionInt;
         
+        
         Vector3Int positionBInt = _gridBuildingSystem.gridLayout.LocalToCell(BuildingPlayerTemp.transform.position);
         BoundsInt areaBTemp = BuildingPlayerTemp.areaBorder;
-        areaBTemp.position = positionBInt;
+
+// Calculate the offset to center the bounding box
+        Vector3Int centerOffset = new Vector3Int(
+            Mathf.FloorToInt((areaBTemp.size.x - 2) / 2),
+            Mathf.FloorToInt((areaBTemp.size.y - 1) / 2),
+            Mathf.FloorToInt((areaBTemp.size.z - 1) / 2)
+        );
+
+// Set the position of the bounding box centered around BuildingPlayerTemp
+        areaBTemp.position = positionBInt - centerOffset;
+
+// Pass the adjusted area to the method
+        _gridBuildingSystem.TakeBArea(areaBTemp);
         
         Destroy(BuildingPlayerTemp.gameObject);
         
-        InitializeWithBuilding(tempBuilding, BuildingPlayerTemp.transform.position);
         _gridBuildingSystem.TakeBArea(areaBTemp);
+        InitializeWithBuilding(tempBuilding, BuildingPlayerTemp.transform.position);
         TakeAreaServerRpc(areaTemp);
         
         

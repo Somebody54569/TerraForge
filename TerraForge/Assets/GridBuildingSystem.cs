@@ -154,9 +154,29 @@ public class GridBuildingSystem : MonoBehaviour
     
     public void TakeBArea(BoundsInt area)
     {
-       // SetTilesBlock(area, TileType.Empty, TempTileMap);
-        SetTilesBlock(area, TileType.White, mainTileMap);
+        Debug.Log("take");
+       // SetTilesBlock(area, TileType.Green, TempTileMap);
+        SetRadiusTilesBlock(area, TileType.White, mainTileMap);
     }
+
+    private static void SetRadiusTilesBlock(BoundsInt area, TileType type, Tilemap tilemap)
+    {
+        Vector3Int min = area.min;
+        Vector3Int max = area.max;
+
+        for (int x = min.x; x <= max.x; x++)
+        {
+            for (int y = min.y; y <= max.y; y++)
+            {
+                for (int z = min.z; z <= max.z; z++)
+                {
+                    Vector3Int position = new Vector3Int(x, y, z);
+                    tilemap.SetTile(position, tileBases[type]);
+                }
+            }
+        }
+    }
+
 
     
     public void ClearAreaWhenDestroy(BoundsInt area)

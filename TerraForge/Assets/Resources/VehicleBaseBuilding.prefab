@@ -362,6 +362,9 @@ MonoBehaviour:
   _GridBuildingSystem: {fileID: 0}
   BuildingTypeNow: 2
   SpawnPoint: {fileID: 1087745450095510517}
+  areaBorder:
+    m_Position: {x: 0, y: 0, z: 0}
+    m_Size: {x: 10, y: 9, z: 1}
 --- !u!114 &334156224869374267
 MonoBehaviour:
   m_ObjectHideFlags: 0

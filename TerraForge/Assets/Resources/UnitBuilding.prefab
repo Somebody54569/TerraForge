@@ -362,6 +362,9 @@ MonoBehaviour:
   _GridBuildingSystem: {fileID: 0}
   BuildingTypeNow: 1
   SpawnPoint: {fileID: 1087745450095510517}
+  areaBorder:
+    m_Position: {x: 0, y: 0, z: 0}
+    m_Size: {x: 8, y: 7, z: 1}
 --- !u!114 &334156224869374267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -377,7 +380,7 @@ MonoBehaviour:
   CurrentHealth:
     m_InternalValue: 0
   <MaxHealth>k__BackingField: 1000
-  Cost: 1000
+  Cost: 0
   Dmg: 0
   timeSinceLastAttack: 0
   AttackCooldown: 0
