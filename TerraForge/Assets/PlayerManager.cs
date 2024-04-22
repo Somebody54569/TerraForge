@@ -96,7 +96,7 @@ public class PlayerManager : NetworkBehaviour
         if (!IsOwner) { return; }
 
        // CheckBuildingIsDestroy();
-       PlayerBuildingTree();
+        PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
         
         if (!BuildingPlayerTemp)
@@ -244,6 +244,15 @@ public class PlayerManager : NetworkBehaviour
                     foreach (GameObject button in buildbutton)
                     {
                         if (button && button.name == "MechUnit")
+                        {
+                            button.SetActive(true); 
+                        }
+                    }
+                    break;
+                case Building.BuildingType.VoridiumDrill:
+                    foreach (GameObject button in buildbutton)
+                    {
+                        if (button && button.name == "VoridiumDrill")
                         {
                             button.SetActive(true); 
                         }
