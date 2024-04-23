@@ -202,8 +202,59 @@ public class PlayerManager : NetworkBehaviour
     private void PlayerBuildingTree()
     {
         RemoveMissingBuildings();
-        foreach (GameObject building in BuildingPlayer)
+        foreach (var VARIABLE in buildbutton)
         {
+            VARIABLE.SetActive(false);
+        }
+        foreach (GameObject building in BuildingPlayer)
+        {/*
+           Building newbuild = building.GetComponent<Building>();
+            foreach (GameObject button in buildbutton)
+            {
+                if (newbuild.BuildingTypeNow == Building.BuildingType.MotherBase)
+                {
+                    if (button && button.name == "UnitBase")
+                    {
+                        button.SetActive(true);
+                    }
+
+                    if (button && button.name == "MeleeUnit")
+                    {
+                        button.SetActive(true);
+                    }
+
+                    if (button && button.name == "VoridiumDrill")
+                    {
+                        button.SetActive(true);
+                    }
+                }
+                if (newbuild.BuildingTypeNow == Building.BuildingType.UnitBase)
+                { if (button && button.name == "PillBox")
+                    {
+                        button.SetActive(true); 
+                    }
+                    if (button && button.name == "RangeUnit")
+                    {
+                        button.SetActive(true); 
+                    }
+                    if (button && button.name == "VehicleBase")
+                    {
+                        button.SetActive(true); 
+                    }
+                }
+                if (newbuild.BuildingTypeNow == Building.BuildingType.VehicleBase)
+                { if (button && button.name == "PillBox")
+                    if (button && button.name == "MechUnit")
+                    {
+                        button.SetActive(true); 
+                    }
+                }
+                else
+                {
+                    button.SetActive(false);
+                }
+            }
+            */
             switch (building.GetComponent<Building>().BuildingTypeNow)
             {
                 case Building.BuildingType.MotherBase:
@@ -258,10 +309,12 @@ public class PlayerManager : NetworkBehaviour
                         }
                     }
                     break;
+                    
                 default:
                     break;
                 
             }
+        
         }
         
     }
@@ -370,12 +423,54 @@ public class PlayerManager : NetworkBehaviour
     
     public void InitializeWithUnit(string prefabName)
     {
-        
+        bool hasBase = false;
         GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
         if (PlayerResource >= buildingPrefab.GetComponent<AttributeUnit>().Cost)
         {
-            PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
-            InitializeWithUnitServerRpc(prefabName);
+            Vector3 Spawnpoint = new Vector3();
+            foreach (GameObject buildingT in BuildingPlayer)
+            {
+                Building building = buildingT.GetComponent<Building>();
+                switch (prefabName)
+                {
+                    case "Unit_Melee":
+                        if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
+                        {
+                            Spawnpoint = building.SpawnPoint.position;
+                            hasBase = true;
+                        }
+
+                        break;
+                    case "Unit_Range":
+                        if (building.BuildingTypeNow == Building.BuildingType.UnitBase)
+                        {
+                            Spawnpoint = building.SpawnPoint.position;
+                            hasBase = true;
+                        }
+
+                        break;
+                    case "Unit_Vehicle":
+                        if (building.BuildingTypeNow == Building.BuildingType.VehicleBase)
+                        {
+                            Spawnpoint = building.SpawnPoint.position;
+                            hasBase = true;
+                        }
+
+                        break;
+                    default:
+                        hasBase = false;
+                        return;
+                        break;
+                }
+            }
+
+            if (hasBase)
+            {
+                PlayerResource -= buildingPrefab.GetComponent<AttributeUnit>().Cost;
+                InitializeWithUnitServerRpc(prefabName);
+            }
+
+          
         }
     }
 
