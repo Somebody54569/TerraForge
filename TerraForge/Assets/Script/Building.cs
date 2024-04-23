@@ -23,7 +23,7 @@ public class Building : NetworkBehaviour
     public GameObject CurrentTarget;
 
     public SimpleFlash SimpleFlash;
-
+    public GameObject light;
     public float AttackRange;
     [SerializeField] private CircleCollider2D DetectRange;
     //[SerializeField] private SpriteRenderer minimapIconRenderer;

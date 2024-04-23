@@ -359,6 +359,7 @@ public class PlayerManager : NetworkBehaviour
                 {
                     tempBuilding = prefabName;
                     BuildingPlayerTemp.GetComponent<BoxCollider2D>().enabled = false;
+                    BuildingPlayerTemp.GetComponent<Building>().light.SetActive(false);
                     switch (BuildingPlayerTemp.BuildingTypeNow)
                     {
                         case Building.BuildingType.VoridiumDrill:
