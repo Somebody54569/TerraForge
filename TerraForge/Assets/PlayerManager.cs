@@ -207,54 +207,7 @@ public class PlayerManager : NetworkBehaviour
             VARIABLE.SetActive(false);
         }
         foreach (GameObject building in BuildingPlayer)
-        {/*
-           Building newbuild = building.GetComponent<Building>();
-            foreach (GameObject button in buildbutton)
-            {
-                if (newbuild.BuildingTypeNow == Building.BuildingType.MotherBase)
-                {
-                    if (button && button.name == "UnitBase")
-                    {
-                        button.SetActive(true);
-                    }
-
-                    if (button && button.name == "MeleeUnit")
-                    {
-                        button.SetActive(true);
-                    }
-
-                    if (button && button.name == "VoridiumDrill")
-                    {
-                        button.SetActive(true);
-                    }
-                }
-                if (newbuild.BuildingTypeNow == Building.BuildingType.UnitBase)
-                { if (button && button.name == "PillBox")
-                    {
-                        button.SetActive(true); 
-                    }
-                    if (button && button.name == "RangeUnit")
-                    {
-                        button.SetActive(true); 
-                    }
-                    if (button && button.name == "VehicleBase")
-                    {
-                        button.SetActive(true); 
-                    }
-                }
-                if (newbuild.BuildingTypeNow == Building.BuildingType.VehicleBase)
-                { if (button && button.name == "PillBox")
-                    if (button && button.name == "MechUnit")
-                    {
-                        button.SetActive(true); 
-                    }
-                }
-                else
-                {
-                    button.SetActive(false);
-                }
-            }
-            */
+        {
             switch (building.GetComponent<Building>().BuildingTypeNow)
             {
                 case Building.BuildingType.MotherBase:

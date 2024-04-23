@@ -22,6 +22,7 @@ public class Building : NetworkBehaviour
     public List<GameObject> TargetToAttack;
     public GameObject CurrentTarget;
 
+    public SimpleFlash SimpleFlash;
 
     public float AttackRange;
     [SerializeField] private CircleCollider2D DetectRange;
@@ -69,6 +70,7 @@ public class Building : NetworkBehaviour
         TargetToAttack = new List<GameObject>();
         _GridBuildingSystem = FindAnyObjectByType<GridBuildingSystem>();
         attributeUnit = this.GetComponent<AttributeUnit>();
+        SimpleFlash.DefulColor = unitColor;
         SpriteRenderer.color = unitColor;
         stateBuildingTypeNow = stateBuilding.Work;
         Placed = false;

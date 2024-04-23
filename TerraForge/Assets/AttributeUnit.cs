@@ -20,8 +20,8 @@ public class AttributeUnit : NetworkBehaviour
     [SerializeField] public float AttackCooldown;
     public float AttackRange;
     private bool isDead;
-
     [SerializeField] private GameObject Armorup;
+    
  //   [SerializeField] public float CDtoBuild;
 
     private void Start()
@@ -34,6 +34,7 @@ public class AttributeUnit : NetworkBehaviour
 
     private void FixedUpdate()
     {
+      
         if (Armor > 0)
         {
             Armorup.SetActive(true);
@@ -42,6 +43,7 @@ public class AttributeUnit : NetworkBehaviour
         {
             Armorup.SetActive(false);
         }
+        
     }
 
     public override void OnNetworkSpawn()
@@ -51,13 +53,16 @@ public class AttributeUnit : NetworkBehaviour
         CurrentHealth.Value = MaxHealth;
     }
 
-    
+    public void Flash()
+    {
+        this.GetComponent<SimpleFlash>().Flash();
+    }
 
     public void TakeDamage(int damageValue)
     {
         int Result =  damageValue - Random.Range(1,Armor);
         ModifyHealth(-Result);
-       // this.GetComponent<SimpleFlash>().Flash();
+        Flash();
     }
 
     public void RestoreHealth(int healValue)

@@ -288,6 +288,7 @@ MonoBehaviour:
   TargetToAttack:
   - {fileID: 0}
   CurrentTarget: {fileID: 0}
+  SimpleFlash: {fileID: 5360948267091503434}
   AttackRange: 0
   DetectRange: {fileID: 8164929319585725762}
 --- !u!114 &334156224869374267
@@ -413,6 +414,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flashMaterial: {fileID: 2100000, guid: 9fb6a408d04bf934ab81328eb056115d, type: 2}
   duration: 0.001
+  DefulColor: {r: 0, g: 0, b: 0, a: 0}
   spriteRenderer: {fileID: 1392355312127187237}
 --- !u!1 &1766463214496719598
 GameObject:

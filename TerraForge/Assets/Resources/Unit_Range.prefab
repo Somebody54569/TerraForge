@@ -329,7 +329,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 100
   m_Sprite: {fileID: -689520407193891599, guid: ea2013cae01de214e8f9277bda5e6a03, type: 3}
-  m_Color: {r: 0.19607845, g: 0.69803923, b: 0, a: 1}
+  m_Color: {r: 0.16470589, g: 0.50980395, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -418,6 +418,7 @@ MonoBehaviour:
   DetectRange: {fileID: 5672402485385086394}
   TestTarget: 
   unitColor: {r: 1, g: 1, b: 1, a: 1}
+  SimpleFlash: {fileID: -5339448985913885238}
 --- !u!114 &5495693877913173386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -582,6 +583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   flashMaterial: {fileID: 2100000, guid: 9fb6a408d04bf934ab81328eb056115d, type: 2}
   duration: 0.001
+  DefulColor: {r: 0, g: 0, b: 0, a: 0}
   spriteRenderer: {fileID: 2702751085314792995}
 --- !u!1 &3293385541176301035
 GameObject:

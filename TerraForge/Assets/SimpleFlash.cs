@@ -19,6 +19,7 @@ namespace BarthaSzabolcs.Tutorial_SpriteFlash
         #endregion
         #region Private Fields
 
+        public Color DefulColor;
         // The SpriteRenderer that should flash.
         public SpriteRenderer spriteRenderer;
         
@@ -39,12 +40,14 @@ namespace BarthaSzabolcs.Tutorial_SpriteFlash
 
         void Start()
         {
+            
             // Get the SpriteRenderer to be used,
             // alternatively you could set it from the inspector.
+  //          spriteRenderer = GetComponent<SpriteRenderer>();
 
             // Get the material that the SpriteRenderer uses, 
             // so we can switch back to it after the flash ended.
-            originalMaterial = spriteRenderer.material;
+//            originalMaterial = spriteRenderer.material;
         }
 
         #endregion
@@ -66,13 +69,13 @@ namespace BarthaSzabolcs.Tutorial_SpriteFlash
         private IEnumerator FlashRoutine()
         {
             // Swap to the flashMaterial.
-            spriteRenderer.material = flashMaterial;
+            spriteRenderer.color = Color.white;
 
             // Pause the execution of this function for "duration" seconds.
             yield return new WaitForSeconds(duration);
 
             // After the pause, swap back to the original material.
-            spriteRenderer.material = originalMaterial;
+            spriteRenderer.color = DefulColor ;
 
             // Set the routine to null, signaling that it's finished.
             flashRoutine = null;

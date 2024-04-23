@@ -27,7 +27,7 @@ public class UnitBehevior : NetworkBehaviour
     private Vector2 moveDirection;
     public string TestTarget;
     public Color unitColor;
-    
+    public SimpleFlash SimpleFlash;
     
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
@@ -48,7 +48,8 @@ public class UnitBehevior : NetworkBehaviour
        AttackRange = attributeUnit.AttackRange;
        DetectRange.radius = AttackRange + 1.5f;
        currentUnitState = UnitState.Idle;
-       GetComponent<SpriteRenderer>().color = unitColor;
+       this.GetComponent<SpriteRenderer>().color = unitColor;
+       SimpleFlash.DefulColor = unitColor;
     }
     
 
@@ -218,6 +219,8 @@ public class UnitBehevior : NetworkBehaviour
         if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
         {
             DamageToTargetServerRpc();
+            CurrentTarget.GetComponent<AttributeUnit>().Flash();
+            
             AudioManager.Instance.PlaySFX("Attack");
             attributeUnit.timeSinceLastAttack = 0f;
         }
