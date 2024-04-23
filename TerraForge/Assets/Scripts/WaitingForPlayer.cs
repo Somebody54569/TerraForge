@@ -46,6 +46,7 @@ public class WaitingForPlayer : NetworkBehaviour
         }
     }
 
+    private bool isHostWin;
     // Update is called once per frame
     void FixedUpdate()
     {
@@ -65,23 +66,25 @@ public class WaitingForPlayer : NetworkBehaviour
                 startButton.interactable = true;
             }
         }
+
+        if (!IsHost)
+        {
+            return;
+        }
         CheckGameDone();
         if (isDone)
         {
             foreach (var player in playerlist)
             {
-                if (player.GetComponent<PlayerManager>().IsLose && player.GetComponent<PlayerManager>().OwnerClientId == this.OwnerClientId)
+                if (!player.GetComponent<PlayerManager>().IsLose)
                 {
-                    waitingPanel.SetActive(true);
-                    waitingText.text = "You are Defeat";
+                    if (player.GetComponent<PlayerManager>().OwnerClientId == this.OwnerClientId)
+                    { 
+                        isHostWin = true;
+                    }
                 }
-                else
-                {
-                    waitingPanel.SetActive(true);
-                    waitingText.text = "You are Victory";
-                }
-              
             }
+            CheckWinCon();
         }
     }
 
@@ -113,7 +116,53 @@ public class WaitingForPlayer : NetworkBehaviour
             SpawnPoint.Enqueue(spawn.transform);
         }
     }
-    
+
+    private void CheckWinCon()
+    {
+        string host;
+        string client;
+        if (isHostWin)
+        {
+             host = "You are Victory";
+             client = "You are Defeat";
+        }
+        else
+        {
+             host ="You are Defeat";
+             client = "You are Victory";
+        }
+        CheckWinConServerRpc( host,client);
+    }
+
+    [ServerRpc]
+    private void CheckWinConServerRpc(string HostCon , string ClientCon)
+    {
+        if (IsHost)
+        {
+            waitingPanel.SetActive(true);
+            waitingText.text = HostCon;
+        }
+        else
+        {
+            waitingPanel.SetActive(true);
+            waitingText.text = ClientCon;  
+        }
+        CheckWinConClientRpc(HostCon,ClientCon);
+    }
+    [ClientRpc]
+    private void CheckWinConClientRpc(string HostCon , string ClientCon)
+    {
+        if (IsHost)
+        {
+            waitingPanel.SetActive(true);
+            waitingText.text = HostCon;
+        }
+        else
+        {
+            waitingPanel.SetActive(true);
+            waitingText.text = ClientCon;  
+        }
+    }
     [ServerRpc]
     private void setSpawnPointServerRpc()
     {
