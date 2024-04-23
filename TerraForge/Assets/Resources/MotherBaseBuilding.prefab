@@ -644,6 +644,7 @@ MonoBehaviour:
   SimpleFlash: {fileID: 8479113211035474067}
   light: {fileID: 1443942187536414758}
   AttackRange: 0
+  explosion: {fileID: 5984844190263434037, guid: dc2c146ca0f2a684ba9f1eb97b0159c2, type: 3}
   DetectRange: {fileID: 5581464870928747698}
 --- !u!114 &334156224869374267
 MonoBehaviour:
@@ -1131,7 +1132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4262984382280596023
 Transform:
   m_ObjectHideFlags: 0

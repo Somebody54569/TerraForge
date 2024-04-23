@@ -25,6 +25,7 @@ public class Building : NetworkBehaviour
     public SimpleFlash SimpleFlash;
     public GameObject light;
     public float AttackRange;
+    public GameObject explosion;
     [SerializeField] private CircleCollider2D DetectRange;
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
@@ -111,6 +112,10 @@ public class Building : NetworkBehaviour
     private void FixedUpdate()
     {
         RemoveMissingBuildings();
+        if (stateBuildingTypeNow == stateBuilding.Destroy)
+        {
+            GameObject instantiatedObject = Instantiate(explosion, this.gameObject.transform.position,Quaternion.identity);
+        }
         if (!IsOwner) { return; }
         if (CurrentTarget != null)
         {

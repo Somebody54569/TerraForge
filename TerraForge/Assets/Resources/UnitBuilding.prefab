@@ -550,6 +550,7 @@ MonoBehaviour:
   SimpleFlash: {fileID: 4302951522743702511}
   light: {fileID: 339840242835351276}
   AttackRange: 0
+  explosion: {fileID: 5984844190263434037, guid: dc2c146ca0f2a684ba9f1eb97b0159c2, type: 3}
   DetectRange: {fileID: 1914614558108879174}
 --- !u!114 &334156224869374267
 MonoBehaviour:
