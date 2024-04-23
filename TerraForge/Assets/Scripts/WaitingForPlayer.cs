@@ -11,6 +11,7 @@ public class WaitingForPlayer : NetworkBehaviour
     [SerializeField] private Button startButton;
     [SerializeField] private TMP_Text waitingText;
     [SerializeField] private GameObject waitingPanel;
+    [SerializeField] private Button exitButton;
 
     private NetworkVariable<bool> IsGameStarted = new NetworkVariable<bool>();
 
@@ -27,6 +28,7 @@ public class WaitingForPlayer : NetworkBehaviour
         if (!IsHost)
         {
             startButton.gameObject.SetActive(false);
+            exitButton.gameObject.SetActive(false);
             waitingText.text = "Wait for Host To Start";
         }
 
@@ -68,6 +70,7 @@ public class WaitingForPlayer : NetworkBehaviour
         CheckGameDone();
         if (isDone)
         {
+            startButton.gameObject.SetActive(false);
             foreach (var player in playerlist)
             {
                 if (player.GetComponent<PlayerManager>().IsLose && player.GetComponent<PlayerManager>().OwnerClientId == this.OwnerClientId)
