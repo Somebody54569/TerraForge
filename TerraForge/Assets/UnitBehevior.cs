@@ -28,7 +28,8 @@ public class UnitBehevior : NetworkBehaviour
     public string TestTarget;
     public Color unitColor;
     public SimpleFlash SimpleFlash;
-    
+
+    public List<SpriteRenderer> listToflip;
     //[SerializeField] private SpriteRenderer minimapIconRenderer;
     //[SerializeField] private Color ownerColorOnMap;
     /*public override void OnNetworkSpawn()
@@ -55,6 +56,7 @@ public class UnitBehevior : NetworkBehaviour
 
     private void Update()
     {
+        
         if (!IsOwner)
         {
             SelectIcon.SetActive(false);
@@ -75,29 +77,22 @@ public class UnitBehevior : NetworkBehaviour
     }
 
     private void FixedUpdate()
-    {
+    { 
         RemoveMissingBuildings();
+     
        if (!IsOwner) { return; }
-
-       if (TargetToAttack != null)
+        
+    
+       if (isSetToForceMove)
        {
-           if (!isSetToForceMove)
-           {
-               currentUnitState = UnitState.Walk;
-               MoveToTargetAndAttack();    
-           }
-           else
-           {
-               currentUnitState = UnitState.Walk;
-               MoveTo();
-           }
-                
+           currentUnitState = UnitState.Walk;
+           MoveTo();   
        }
        else
        {
-           MoveTo();   
+           MoveToTargetAndAttack();    
        }
-
+       
     }
 
 
@@ -159,6 +154,7 @@ public class UnitBehevior : NetworkBehaviour
     {
         if (CurrentTarget == null)
         {
+            attributeUnit.SetMuzzleServerRpc(false);
             return;
         }
         if (CurrentTarget != null)
@@ -209,6 +205,8 @@ public class UnitBehevior : NetworkBehaviour
     {
         if (attributeUnit.timeSinceLastAttack == 0f)
         {
+            AudioManager.Instance.PlaySFX("Attack");
+            attributeUnit.SetMuzzleServerRpc(false);
             SetAttackAnimaServerRpc();
         }
 
@@ -220,10 +218,10 @@ public class UnitBehevior : NetworkBehaviour
         {
             DamageToTargetServerRpc();
             CurrentTarget.GetComponent<AttributeUnit>().Flash();
-            
-            AudioManager.Instance.PlaySFX("Attack");
+            attributeUnit.SetMuzzleServerRpc(true);
             attributeUnit.timeSinceLastAttack = 0f;
         }
+       
     }
 
 
@@ -267,13 +265,20 @@ public class UnitBehevior : NetworkBehaviour
         // Walk to the right
         if (moveDirection.x > 0)
         {
-            SpriteRenderer.flipX = false; // No flipping
+            foreach (SpriteRenderer sprite in listToflip)
+            {
+                sprite.flipX = false;
+            }
+            
             FlipServerRpc(SpriteRenderer.flipX);
         }
         // Walk to the left
         else if (moveDirection.x < 0)
         {
-            SpriteRenderer.flipX = true; // Flip x-axis
+            foreach (SpriteRenderer sprite in listToflip)
+            {
+                sprite.flipX = true;
+            }
             FlipServerRpc(SpriteRenderer.flipX);
         }
     }
@@ -287,7 +292,10 @@ public class UnitBehevior : NetworkBehaviour
     [ClientRpc]
     private void FlipClientRpc(bool flipX)
     {
-        SpriteRenderer.flipX = flipX;
+        foreach (SpriteRenderer sprite in listToflip)
+        {
+            sprite.flipX = flipX;
+        }
     }
     #endregion
     

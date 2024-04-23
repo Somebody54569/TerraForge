@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 public class AttributeUnit : NetworkBehaviour
 {
-  
+    public GameObject flash;
     public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>();
     [field: SerializeField] public int MaxHealth { get; private set; } = 100;
 
@@ -52,7 +52,22 @@ public class AttributeUnit : NetworkBehaviour
 
         CurrentHealth.Value = MaxHealth;
     }
+    [ServerRpc]
+    public void SetMuzzleServerRpc(bool b)
+    {
+        SetMuzzleClientRpc(b);
+    }
 
+    [ClientRpc]
+    private void SetMuzzleClientRpc(bool b)
+    {
+        SetMuzzle(b);
+    }
+    private void SetMuzzle(bool b)
+    {
+        flash.SetActive(b);
+    }
+   
     public void Flash()
     {
         this.GetComponent<SimpleFlash>().Flash();

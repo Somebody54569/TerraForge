@@ -36,6 +36,9 @@ public class Building : NetworkBehaviour
             minimapIconRenderer.color = ownerColorOnMap;
         }
     }*/
+
+
+    
     public void SetTarget(GameObject newTarget)
     {
         TargetToAttack.Add(newTarget);
@@ -80,28 +83,45 @@ public class Building : NetworkBehaviour
 
     private void Attack()
     {
-        AttackRange = attributeUnit.AttackRange;
-        DetectRange.radius = AttackRange;
-        
-        attributeUnit.timeSinceLastAttack += Time.deltaTime;
-        if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
+        if (attributeUnit.Dmg != 0)
         {
-            // TargetToAttack.GetComponent<SimpleFlash>().Flash();
-            DamageToTargetServerRpc();
-            AudioManager.Instance.PlaySFX("Attack");
-            attributeUnit.timeSinceLastAttack = 0f;
+            if (attributeUnit.timeSinceLastAttack == 0f)
+            {
+                attributeUnit.flash.SetActive(true);
+                attributeUnit.SetMuzzleServerRpc(false);
+                AudioManager.Instance.PlaySFX("Attack");
+            }
+
+            AttackRange = attributeUnit.AttackRange;
+            DetectRange.radius = AttackRange;
+        
+            attributeUnit.timeSinceLastAttack += Time.deltaTime;
+            if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
+            {
+                // TargetToAttack.GetComponent<SimpleFlash>().Flash();
+                attributeUnit.flash.SetActive(false);
+                attributeUnit.SetMuzzleServerRpc(true);
+                DamageToTargetServerRpc();
+                attributeUnit.timeSinceLastAttack = 0f;
+            }          
         }
+  
     }
 
     private void FixedUpdate()
     {
         RemoveMissingBuildings();
         if (!IsOwner) { return; }
-      
         if (CurrentTarget != null)
         {
-           Attack();
+            Attack();
         }
+        else
+        {
+            attributeUnit.SetMuzzleServerRpc(false);
+        }
+
+
     }
 
 
