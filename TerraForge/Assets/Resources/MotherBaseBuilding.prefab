@@ -572,7 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 673856595
+  GlobalObjectIdHash: 118800718
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -624,7 +624,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bad4b00ee81f8b429fe2137dc010039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Placed: 0
+  Placed: 1
   area:
     m_Position: {x: 4, y: 0, z: 0}
     m_Size: {x: 4, y: 3, z: 1}
@@ -661,10 +661,10 @@ MonoBehaviour:
   <MaxHealth>k__BackingField: 2500
   Armor: 0
   Cost: 0
-  Dmg: 25
+  Dmg: 35
   timeSinceLastAttack: 0
   AttackCooldown: 0.5
-  AttackRange: 7
+  AttackRange: 9
   Armorup: {fileID: 8961442857215881260}
 --- !u!114 &9185168642043785805
 MonoBehaviour:

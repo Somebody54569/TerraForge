@@ -32,14 +32,32 @@ public class DetectAndDmg : MonoBehaviour
         }
     }
 
-    private void FixedUpdate()
+    private void  OnTriggerExit2D(Collider2D other)
     {
-        foreach (var target in Unit.TargetToAttack)
+        if (other.GetComponent<AttributeUnit>()!= null)
         {
-            if (Vector2.Distance(Unit.transform.position, target.transform.position) < Unit.AttackRange)
-            {
-                Unit.CurrentTarget = target;
-            }
+            Unit.RemoveTarget(other.gameObject);
         }
     }
+
+    private void FixedUpdate()
+    {
+        float nearestDistance = Mathf.Infinity; // Initialize the nearest distance to a very large value
+        GameObject nearestTarget = null; // Initialize the nearest target to null
+
+        foreach (var target in Unit.TargetToAttack)
+        {
+            float distanceToTarget = Vector2.Distance(Unit.transform.position, target.transform.position);
+
+            if (distanceToTarget < Unit.AttackRange && distanceToTarget < nearestDistance)
+            {
+                nearestDistance = distanceToTarget;
+                nearestTarget = target;
+            }
+        }
+
+        // Set the current target to the nearest one found
+        Unit.CurrentTarget = nearestTarget;
+    }
+
 }

@@ -17,6 +17,8 @@ public class WaitingForPlayer : NetworkBehaviour
     public GridBuildingSystem _gridBuildingSystem;
 
     private Queue<Transform> SpawnPoint;
+
+    public bool isDone;
     // Start is called before the first frame update
     void Start()
     {
@@ -63,19 +65,36 @@ public class WaitingForPlayer : NetworkBehaviour
                 startButton.interactable = true;
             }
         }
-
-        if (IsHost)
+        CheckGameDone();
+        if (isDone)
         {
             foreach (var player in playerlist)
             {
-                if (player.GetComponent<PlayerManager>().IsLose)
+                if (player.GetComponent<PlayerManager>().IsLose && player.GetComponent<PlayerManager>().OwnerClientId == this.OwnerClientId)
                 {
-                
+                    waitingPanel.SetActive(true);
+                    waitingText.text = "You are Defeat";
                 }
+                else
+                {
+                    waitingPanel.SetActive(true);
+                    waitingText.text = "You are Victory";
+                }
+              
             }
         }
     }
 
+    public void CheckGameDone()
+    {
+        foreach (var player in playerlist)
+        {
+            if (player.GetComponent<PlayerManager>().IsLose)
+            {
+                isDone = true;
+            }
+        }
+    }
     public void StartGame()
     {
         IsGameStarted.Value = true;

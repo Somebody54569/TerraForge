@@ -528,7 +528,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3287590506
+  GlobalObjectIdHash: 496378761
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -698,9 +698,9 @@ MonoBehaviour:
   <MaxHealth>k__BackingField: 500
   Armor: 0
   Cost: 600
-  Dmg: 35
+  Dmg: 25
   timeSinceLastAttack: 0
-  AttackCooldown: 0.35
+  AttackCooldown: 0.2
   AttackRange: 8
   Armorup: {fileID: 219265504057782213}
 --- !u!95 &1608800068891963863

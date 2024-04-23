@@ -159,15 +159,11 @@ public class UnitBehevior : NetworkBehaviour
         }
         if (CurrentTarget != null)
         {
-            foreach (var target in TargetToAttack)
+            if (Vector2.Distance(rb.position, CurrentTarget.transform.position) < AttackRange)
             {
-                if (Vector2.Distance(rb.position, target.transform.position) < AttackRange)
-                {
-                    FlipXWalkServerRpc(false);
-                    rb.velocity = Vector2.zero;
-               //     CurrentTarget = target;
-                    Attack();
-                }
+                FlipXWalkServerRpc(false);
+                rb.velocity = Vector2.zero;
+                Attack();
             }
            
 

@@ -611,7 +611,7 @@ public class PlayerManager : NetworkBehaviour
                         areaTemp.position = positionInt;
                         if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
                         {
-                            IsLose = true;
+                            ImLose(true);
                         }
                         ClearAreaServerRpc(areaTemp,TileType.White);
                         _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.White);
@@ -636,5 +636,22 @@ public class PlayerManager : NetworkBehaviour
 
         _gridBuildingSystem.ClearAreaWhenDestroy(area ,type);
     }
-    
+    private void ImLose(bool b)
+    {
+        IsLose = b;
+        ImLoseServerRpc(b);
+        
+    }
+
+    [ServerRpc]
+    private void ImLoseServerRpc(bool b)
+    {
+        ImLoseClientRpc(b);
+    }
+
+    [ClientRpc]
+    private void ImLoseClientRpc(bool b)
+    {
+        IsLose = b;
+    }
 }
