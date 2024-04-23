@@ -86,6 +86,7 @@ public class Building : NetworkBehaviour
         {
             // TargetToAttack.GetComponent<SimpleFlash>().Flash();
             DamageToTargetServerRpc();
+            AudioManager.Instance.PlaySFX("Attack");
             attributeUnit.timeSinceLastAttack = 0f;
         }
     }

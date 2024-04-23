@@ -75,10 +75,12 @@ public class AttributeUnit : NetworkBehaviour
         {
             if (this.GetComponent<Building>() == null)
             {
+                AudioManager.Instance.PlaySFX("Died");
                 Destroy(this.gameObject);
             }
             if (this.GetComponent<Building>() != null)
             {
+                AudioManager.Instance.PlaySFX("Collapse");
                 _building.stateBuildingTypeNow = Building.stateBuilding.Destroy;
             }
         }

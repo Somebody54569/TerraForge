@@ -170,7 +170,6 @@ public class UnitBehevior : NetworkBehaviour
                     rb.velocity = Vector2.zero;
                //     CurrentTarget = target;
                     Attack();
-
                 }
             }
            
@@ -219,6 +218,7 @@ public class UnitBehevior : NetworkBehaviour
         if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
         {
             DamageToTargetServerRpc();
+            AudioManager.Instance.PlaySFX("Attack");
             attributeUnit.timeSinceLastAttack = 0f;
         }
     }

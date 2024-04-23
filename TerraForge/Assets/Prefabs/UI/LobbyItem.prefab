@@ -133,6 +133,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6595096834787872631}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1799891851655380827
 GameObject:
   m_ObjectHideFlags: 0
@@ -281,6 +293,7 @@ GameObject:
   - component: {fileID: 1333789670569603839}
   - component: {fileID: 1483483489603117215}
   - component: {fileID: 1271610999451381452}
+  - component: {fileID: 6595096834787872631}
   m_Layer: 0
   m_Name: LobbyItem
   m_TagString: Untagged
@@ -362,6 +375,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lobbyNameText: {fileID: 5051651837349184793}
   lobbyPlayerText: {fileID: 8212417733988721143}
+--- !u!114 &6595096834787872631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2669857968852756339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc122e3637de5a4c82004783db1fd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4297169080301129767
 GameObject:
   m_ObjectHideFlags: 0

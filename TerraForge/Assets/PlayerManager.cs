@@ -567,6 +567,7 @@ public class PlayerManager : NetworkBehaviour
     public void InitializeWithBuilding(string prefabName, Vector3 position)
     {
         InitializeWithBuildingServerRpc(prefabName,position);
+        AudioManager.Instance.PlaySFX("Button");
         
     }
     [ServerRpc]

@@ -346,6 +346,18 @@ MonoBehaviour:
           m_StringArgument: UnitBuilding
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8906625135265571510}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &783619295667901464
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +624,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Unit_Melee
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8906625135265571510}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &993888800891878811
@@ -1129,7 +1153,7 @@ MonoBehaviour:
   tempBuilding: 
   PlayerResource: 0
   PlayerResourceRiseRate: 100
-  isSpawn: 0
+  IsLose: 0
   IsPlayerMax:
     m_InternalValue: 0
   PlayerColorIndex:
@@ -1478,6 +1502,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: PillBoxBaseBuilding
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8906625135265571510}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &2314726435106343139
@@ -2480,6 +2516,18 @@ MonoBehaviour:
           m_StringArgument: VehicleBaseBuilding
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8906625135265571510}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3916901735069458706
 GameObject:
   m_ObjectHideFlags: 0
@@ -3161,6 +3209,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: VoridiumDrill
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 8906625135265571510}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &4630966163828338428
@@ -4841,6 +4901,18 @@ MonoBehaviour:
           m_StringArgument: Unit_Vehicle
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8906625135265571510}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6832800889318665181
 GameObject:
   m_ObjectHideFlags: 0
@@ -5898,6 +5970,18 @@ MonoBehaviour:
           m_StringArgument: Unit_Range
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 8906625135265571510}
+        m_TargetAssemblyTypeName: UISound, Assembly-CSharp
+        m_MethodName: PlaySoundSFX
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8411074560440029258
 GameObject:
   m_ObjectHideFlags: 0
@@ -5910,6 +5994,7 @@ GameObject:
   - component: {fileID: 3113899682129385071}
   - component: {fileID: 8146650366057255990}
   - component: {fileID: 5176783192238187289}
+  - component: {fileID: 8906625135265571510}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -6001,6 +6086,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &8906625135265571510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8411074560440029258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc122e3637de5a4c82004783db1fd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8677998748545363149
 GameObject:
   m_ObjectHideFlags: 0
