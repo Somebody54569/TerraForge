@@ -112,10 +112,6 @@ public class Building : NetworkBehaviour
     private void FixedUpdate()
     {
         RemoveMissingBuildings();
-        if (stateBuildingTypeNow == stateBuilding.Destroy)
-        {
-            GameObject instantiatedObject = Instantiate(explosion, this.gameObject.transform.position,Quaternion.identity);
-        }
         if (!IsOwner) { return; }
         if (CurrentTarget != null)
         {

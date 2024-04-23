@@ -331,7 +331,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 100
   m_Sprite: {fileID: -689520407193891599, guid: ea2013cae01de214e8f9277bda5e6a03, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.16470589, b: 0.20784315, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -411,6 +411,8 @@ MonoBehaviour:
   SpriteRenderer: {fileID: 2702751085314792995}
   Animator: {fileID: 1608800068891963863}
   NetworkAnimator: {fileID: 1113493473911909496}
+  currentState: 0
+  currentUnitState: 0
   SelectIcon: {fileID: 3293385541176301035}
   AttackRange: 0
   attributeUnit: {fileID: 2229249735808330275}
@@ -418,6 +420,7 @@ MonoBehaviour:
   - {fileID: 0}
   CurrentTarget: {fileID: 0}
   DetectRange: {fileID: 5672402485385086394}
+  isSetToForceMove: 0
   TestTarget: 
   unitColor: {r: 1, g: 1, b: 1, a: 1}
   SimpleFlash: {fileID: -5339448985913885238}
@@ -496,7 +499,7 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0

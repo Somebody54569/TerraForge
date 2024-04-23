@@ -15,15 +15,15 @@ public class UnitBehevior : NetworkBehaviour
     public SpriteRenderer SpriteRenderer;
     public Animator Animator;
     public NetworkAnimator NetworkAnimator;
-    private state currentState;
-    private UnitState currentUnitState;
+    public state currentState;
+    public UnitState currentUnitState;
     [SerializeField] private GameObject SelectIcon;
     public float AttackRange;
     public AttributeUnit attributeUnit;
     public List<GameObject> TargetToAttack;
     public GameObject CurrentTarget;
     [SerializeField] private CircleCollider2D DetectRange;
-    private bool isSetToForceMove;
+    public bool isSetToForceMove;
     private Vector2 moveDirection;
     public string TestTarget;
     public Color unitColor;
@@ -62,18 +62,8 @@ public class UnitBehevior : NetworkBehaviour
             SelectIcon.SetActive(false);
             return;
         }
-        
-            if (Input.GetMouseButtonDown(1))
-            {
-                if (currentState == state.Select)
-                {
-                    //SetTarget(null);
-                    targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    isSetToForceMove = true;
-                    currentUnitState = UnitState.Walk;
-                }
-            }
-            CheckIconSelect();
+
+        CheckIconSelect();
     }
 
     private void FixedUpdate()

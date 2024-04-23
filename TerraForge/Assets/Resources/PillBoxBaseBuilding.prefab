@@ -401,7 +401,7 @@ MonoBehaviour:
   Cost: 200
   Dmg: 25
   timeSinceLastAttack: 0
-  AttackCooldown: 1.5
+  AttackCooldown: 0.4
   AttackRange: 5
   Armorup: {fileID: 5089464895701377967}
 --- !u!114 &9185168642043785805

@@ -29,6 +29,55 @@ public class PlayerManager : NetworkBehaviour
     public List<GameObject> buildbutton;
 
   //  private List<Building> Vbuilding;
+
+  private int unitsPerCircle = 4; // Define the initial number of units per circle
+
+  private void SetTargetPositionsAroundMouse()
+  {
+      int newUnitsPerCircle = unitsPerCircle;
+      Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+      int count = SelectUnit.Count;
+
+      int unitsDistributed = 0;
+      int circleCount = 1; // Start with one circle
+
+      while (unitsDistributed < count)
+      {
+          // Calculate the number of units for this circle
+          int unitsInThisCircle = Mathf.Min(newUnitsPerCircle, count - unitsDistributed);
+
+          // Calculate the radius step between circles
+          float radiusStep = circleCount * 0.7f; // Adjust this value for the spacing between circles
+
+          // Loop through each unit in this circle
+          for (int i = 0; i < unitsInThisCircle; i++)
+          {
+              // Calculate position based on angle and radius
+              float angle = i * (360f / newUnitsPerCircle);
+              float posX = mousePosition.x + radiusStep * Mathf.Cos(angle * Mathf.Deg2Rad);
+              float posY = mousePosition.y + radiusStep * Mathf.Sin(angle * Mathf.Deg2Rad);
+              Vector3 targetPos = new Vector3(posX, posY, mousePosition.z);
+
+              // Set target position for the unit
+              SelectUnit[unitsDistributed].targetPosition = targetPos;
+              SelectUnit[unitsDistributed].isSetToForceMove = true;
+              SelectUnit[unitsDistributed].currentUnitState = UnitState.Walk;
+
+              unitsDistributed++;
+          }
+        
+          // Update the number of units per circle for the next circle
+          newUnitsPerCircle *= 2;
+
+          // Calculate the number of circles needed for the remaining units
+          circleCount++;
+      }
+  }
+
+
+
+
+
     public override void OnNetworkSpawn()
     {
         if (IsServer)
@@ -69,9 +118,7 @@ public class PlayerManager : NetworkBehaviour
                 VARIABLE.SetActive(false);
             }
         }
-
-       
-
+        
     }
 
     private void FixedUpdate()
@@ -91,10 +138,30 @@ public class PlayerManager : NetworkBehaviour
         {
           //  Debug.Log(BuildingPlayerTemp);   
         }
+        
         RemoveMissingUnit();
         CheckBuildingIsDestroy();
         if (!IsOwner) { return; }
+        
+        if (Input.GetMouseButtonDown(1))
+        {
+            foreach (UnitBehevior unit in SelectUnit)
+            {
+                if (unit.currentState == state.Select)
+                {
+                    if (SelectUnit.Count > 1)
+                    {
+                        SetTargetPositionsAroundMouse();
+                        return;
+                    }
 
+                    // Otherwise, set targetPosition to mousePosition
+                    unit.targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    unit. isSetToForceMove = true;
+                    unit.currentUnitState = UnitState.Walk;
+                }
+            }
+        }
        // CheckBuildingIsDestroy();
         PlayerBuildingTree();
         ResourceText.text = PlayerResource.ToString();
@@ -599,7 +666,7 @@ public class PlayerManager : NetworkBehaviour
                         areaTemp.position = positionInt;
                         ClearAreaServerRpc(areaTemp,TileType.Blue);
                         _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.Blue);
-                      //  Vbuilding.Remove(building);
+                        //  Vbuilding.Remove(building);
                         Destroy(buildingt);
                     }
                     break;

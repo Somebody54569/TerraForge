@@ -34,7 +34,6 @@ public class AttributeUnit : NetworkBehaviour
 
     private void FixedUpdate()
     {
-      
         if (Armor > 0)
         {
             Armorup.SetActive(true);
@@ -101,6 +100,7 @@ public class AttributeUnit : NetworkBehaviour
             if (this.GetComponent<Building>() != null)
             {
                 AudioManager.Instance.PlaySFX("Collapse");
+                Instantiate(this.GetComponent<Building>().explosion, this.transform.position,Quaternion.identity);
                 _building.stateBuildingTypeNow = Building.stateBuilding.Destroy;
             }
         }
