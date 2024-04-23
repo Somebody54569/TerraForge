@@ -1198,8 +1198,8 @@ MonoBehaviour:
   virtualCamera: {fileID: 7002943533689542481}
   moveSpeed: 20
   ownerPriority: 15
-  topLeftBoundary: {x: -24, y: 23}
-  bottomRightBoundary: {x: 23, y: -24}
+  topLeftBoundary: {x: -14, y: 14}
+  bottomRightBoundary: {x: 14, y: -14}
   useEdgeScrolling: 0
   edgeScrollingSpeed: 10
   edgeScrollSize: 10
