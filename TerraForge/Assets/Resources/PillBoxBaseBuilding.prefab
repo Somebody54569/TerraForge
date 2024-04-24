@@ -402,7 +402,7 @@ MonoBehaviour:
   Dmg: 25
   timeSinceLastAttack: 0
   AttackCooldown: 0.4
-  AttackRange: 5
+  AttackRange: 9
   Armorup: {fileID: 5089464895701377967}
 --- !u!114 &9185168642043785805
 MonoBehaviour:

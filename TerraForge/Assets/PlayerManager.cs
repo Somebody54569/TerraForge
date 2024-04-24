@@ -129,19 +129,15 @@ public class PlayerManager : NetworkBehaviour
             PlayerResource += (int)resourceIncrease;  
            // Debug.Log(Vbuilding.Count);
         }
-          
+        
     }
 
     private void Update()
     {
-        if (BuildingPlayerTemp != null)
-        {
-          //  Debug.Log(BuildingPlayerTemp);   
-        }
-        
         RemoveMissingUnit();
-        CheckBuildingIsDestroy();
+        RemoveMissingBuildings();
         if (!IsOwner) { return; }
+        CheckBuildingIsDestroy();
         
         if (Input.GetMouseButtonDown(1))
         {
@@ -651,47 +647,112 @@ public class PlayerManager : NetworkBehaviour
     public void CheckBuildingIsDestroy()
     {
         RemoveMissingBuildings();
-        
         foreach (GameObject buildingt in BuildingPlayer)
         {
             Building building = buildingt.GetComponent<Building>();
-            switch (building.BuildingTypeNow)
+            if (building.BuildingTypeNow == Building.BuildingType.VoridiumDrill)
             {
-                case Building.BuildingType.VoridiumDrill:
-                    if (building.stateBuildingTypeNow == Building.stateBuilding.Destroy)
-                    {
-                        Vector3 position = buildingt.transform.position;
-                        Vector3Int positionInt = new Vector3Int((int)position.x, (int)position.y -1, (int)position.z);
-                        BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
-                        areaTemp.position = positionInt;
-                        ClearAreaServerRpc(areaTemp,TileType.Blue);
-                        _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.Blue);
-                        //  Vbuilding.Remove(building);
-                        Destroy(buildingt);
-                    }
-                    break;
-                default:
-                    if (building.stateBuildingTypeNow == Building.stateBuilding.Destroy)
-                    {
-                        Vector3 position = buildingt.transform.position;
-                        Vector3Int positionInt = new Vector3Int((int)position.x - 1, (int)position.y, (int)position.z);
-                        BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
-                        areaTemp.position = positionInt;
-                        if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
-                        {
-                            ImLose(true);
-                        }
-                        ClearAreaServerRpc(areaTemp,TileType.White);
-                        _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.White);
-                        Destroy(buildingt);
-                    }
-                    break;
+                if (building.stateBuildingTypeNow == Building.stateBuilding.Destroy)
+                {
+                    Vector3 position = buildingt.transform.position;
+                    Vector3Int positionInt = new Vector3Int((int)position.x, (int)position.y -1, (int)position.z);
+                    BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
+                    areaTemp.position = positionInt;
+                    ClearAreaServerRpc(areaTemp,TileType.Blue);
+                    _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.Blue);
+                    explosionEff("explosion",position);
+                    //Destroy(buildingt);
+                    DestoryObjServer(buildingt);
+                    //building.DestroyBuilding(buildingt);
+                }
             }
-          
+            else
+            {
+                if (building.stateBuildingTypeNow == Building.stateBuilding.Destroy)
+                {
+                    Vector3 position = buildingt.transform.position;
+                    Vector3Int positionInt = new Vector3Int((int)position.x - 1, (int)position.y, (int)position.z);
+                    BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
+                    areaTemp.position = positionInt;
+                    if (building.BuildingTypeNow == Building.BuildingType.MotherBase)
+                    {
+                        ImLose(true);
+                    }
+                    ClearAreaServerRpc(areaTemp,TileType.White);
+                    explosionEff("explosion",position);
+                    _gridBuildingSystem.ClearAreaWhenDestroy(areaTemp , TileType.White);
+                    DestoryObjServer(buildingt);
+                    //building.DestroyBuilding(buildingt);
+                }
+            }
+            
         }
 
         calCoin();
     }
+/*
+    [ServerRpc]
+    private void CheckBuildingIsDestroyServerRpc()
+    {
+        if (!IsOwner)
+        {
+            return;
+        }
+        CheckBuildingIsDestroyClientRpc();
+    }
+
+     [ClientRpc]
+    private void CheckBuildingIsDestroyClientRpc()
+    {
+        
+    }
+    */
+    private void DestoryObjServer(GameObject obj)
+    {
+        DestoryObjServerRpc(obj);
+    }
+
+    [ServerRpc]
+    private void DestoryObjServerRpc(NetworkObjectReference objF)
+    {
+        GameObject gameObjectF = objF;
+        Destroy(gameObjectF);
+        DestoryObjClientRpc(objF);
+    }
+    [ClientRpc]
+    private void DestoryObjClientRpc(NetworkObjectReference objF)
+    {
+        GameObject gameObjectF = objF;
+        Destroy(gameObjectF);
+    }
+
+
+    private void explosionEff(string prefabName,Vector3 position)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+        if (buildingPrefab != null)
+        {
+            Instantiate(buildingPrefab, position,Quaternion.identity);
+            explosionServerRpc(prefabName,position);
+        }
+    }
+    [ServerRpc]
+    private void explosionServerRpc(string prefabName,Vector3 position)
+    {
+        if (IsOwner)
+        {
+            GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+            Instantiate(buildingPrefab, position,Quaternion.identity);
+        }
+        explosionClientRpc(prefabName,position);
+    }
+    [ClientRpc]
+    private void explosionClientRpc(string prefabName,Vector3 position)
+    {
+        GameObject buildingPrefab = Resources.Load<GameObject>(prefabName);
+        Instantiate(buildingPrefab, position,Quaternion.identity);
+    }
+    
     [ServerRpc]
     private void ClearAreaServerRpc(ForceNetworkSerializeByMemcpy<BoundsInt> area,TileType type)
     {

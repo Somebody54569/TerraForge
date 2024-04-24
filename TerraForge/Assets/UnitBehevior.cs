@@ -202,9 +202,11 @@ public class UnitBehevior : NetworkBehaviour
         attributeUnit.timeSinceLastAttack += Time.deltaTime;
         if (attributeUnit.timeSinceLastAttack >= attributeUnit.AttackCooldown)
         {
-            DamageToTargetServerRpc();
-            CurrentTarget.GetComponent<AttributeUnit>().Flash();
-            attributeUnit.SetMuzzleServerRpc(true);
+            if (IsOwner)
+            {
+                DamageToTargetServerRpc();
+                attributeUnit.SetMuzzleServerRpc(true);
+            }
             attributeUnit.timeSinceLastAttack = 0f;
         }
        
@@ -231,17 +233,12 @@ public class UnitBehevior : NetworkBehaviour
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
-        CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
- //      FlashServerRpc();
-      //  DamageToTargetClientRpc();
+        CurrentTarget.GetComponent<AttributeUnit>().Flash();
+        DamageToTargetClientRpc();
     }
     [ClientRpc]
     private void DamageToTargetClientRpc()
     {
-        if (IsHost)
-        {
-            return;
-        }
         CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
     }
 

@@ -108,7 +108,13 @@ public class Building : NetworkBehaviour
         }
   
     }
-
+    public void DestroyBuilding(GameObject buildingt)
+    {
+        AudioManager.Instance.PlaySFX("Collapse");
+        Instantiate(explosion, this.transform.position,Quaternion.identity);
+     //   explosionServerRpc();
+        Destroy(buildingt);
+    }
     private void FixedUpdate()
     {
         RemoveMissingBuildings();
@@ -125,14 +131,18 @@ public class Building : NetworkBehaviour
 
     }
 
-
     [ServerRpc]
     private void DamageToTargetServerRpc()
     {
-      //  FlashServerRpc();
+        CurrentTarget.GetComponent<AttributeUnit>().Flash();
+        DamageToTargetClientRpc();
+    }
+    [ClientRpc]
+    private void DamageToTargetClientRpc()
+    {
         CurrentTarget.GetComponent<AttributeUnit>().TakeDamage(attributeUnit.Dmg);
     }
-    
+
 
     public bool CanBePlaced()
     {

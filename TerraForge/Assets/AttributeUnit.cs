@@ -42,15 +42,54 @@ public class AttributeUnit : NetworkBehaviour
         {
             Armorup.SetActive(false);
         }
-        
+        if (CurrentHealth.Value <= 0)
+        {
+            if (_building != null)
+            {
+                if (IsOwner)
+                {
+                    ChangeBuildingState();
+                }
+            }
+            else
+            {
+                Destroy(this.gameObject);
+            }
+        }
     }
-
+    
+    
     public override void OnNetworkSpawn()
     {
         if (!IsServer) { return; }
 
         CurrentHealth.Value = MaxHealth;
     }
+
+    private void ChangeBuildingState()
+    {
+        _building.stateBuildingTypeNow = Building.stateBuilding.Destroy;
+        ChangeBuildingStateServerRpc();
+    }
+    
+    [ServerRpc]
+    public void ChangeBuildingStateServerRpc()
+    {
+        ChangeBuildingStateClientRpc();
+    }
+
+    [ClientRpc]
+    private void ChangeBuildingStateClientRpc()
+    {
+        ChangeBuildingStat();
+    }
+    private void ChangeBuildingStat()
+    {
+        _building.stateBuildingTypeNow = Building.stateBuilding.Destroy;
+    }
+    
+    
+    
     [ServerRpc]
     public void SetMuzzleServerRpc(bool b)
     {
@@ -75,8 +114,8 @@ public class AttributeUnit : NetworkBehaviour
     public void TakeDamage(int damageValue)
     {
         int Result =  damageValue - Random.Range(1,Armor);
-        ModifyHealth(-Result);
         Flash();
+        ModifyHealth(-Result);
     }
 
     public void RestoreHealth(int healValue)
@@ -90,20 +129,6 @@ public class AttributeUnit : NetworkBehaviour
         
         int newHealth = CurrentHealth.Value + value;
         CurrentHealth.Value = Mathf.Clamp(newHealth, 0, MaxHealth);
-        if (CurrentHealth.Value == 0)
-        {
-            if (this.GetComponent<Building>() == null)
-            {
-                AudioManager.Instance.PlaySFX("Died");
-                Destroy(this.gameObject);
-            }
-            if (this.GetComponent<Building>() != null)
-            {
-                AudioManager.Instance.PlaySFX("Collapse");
-                Instantiate(this.GetComponent<Building>().explosion, this.transform.position,Quaternion.identity);
-                _building.stateBuildingTypeNow = Building.stateBuilding.Destroy;
-            }
-        }
     }
 
 
