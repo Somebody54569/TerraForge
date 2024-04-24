@@ -536,7 +536,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 100
   m_Sprite: {fileID: -5707714140542583143, guid: cea24629d86239a47b3acdca0890fa07, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.19607845, g: 0.69803923, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -558,7 +558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 3602935568
+  GlobalObjectIdHash: 99916574
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -726,7 +726,7 @@ MonoBehaviour:
     m_InternalValue: 0
   <MaxHealth>k__BackingField: 150
   Armor: 0
-  Cost: 50
+  Cost: 100
   Dmg: 40
   timeSinceLastAttack: 0
   AttackCooldown: 0.8

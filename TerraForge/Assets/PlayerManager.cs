@@ -655,7 +655,7 @@ public class PlayerManager : NetworkBehaviour
                 if (building.stateBuildingTypeNow == Building.stateBuilding.Destroy)
                 {
                     Vector3 position = buildingt.transform.position;
-                    Vector3Int positionInt = new Vector3Int((int)position.x, (int)position.y -1, (int)position.z);
+                    Vector3Int positionInt = new Vector3Int((int)position.x, (int)position.y, (int)position.z);
                     BoundsInt areaTemp = buildingt.GetComponent<Building>().area;
                     areaTemp.position = positionInt;
                     ClearAreaServerRpc(areaTemp,TileType.Blue);
@@ -685,7 +685,6 @@ public class PlayerManager : NetworkBehaviour
                     //building.DestroyBuilding(buildingt);
                 }
             }
-            
         }
 
         calCoin();
